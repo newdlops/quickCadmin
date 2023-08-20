@@ -11,15 +11,15 @@ const AppMenu = () => {
     },
     {
       label: '유저관리',
-      items: [{ label: '유저관리', icon: 'pi pi-fw pi-user', to: '/' }],
+      items: [{ label: '유저관리', icon: 'pi pi-fw pi-user', to: '/user' }],
     },
     {
       label: '제품관리',
-      items: [{ label: '제품관리', icon: 'pi pi-fw pi-box', to: '/' }],
+      items: [{ label: '제품관리', icon: 'pi pi-fw pi-box', to: '/product' }],
     },
     {
       label: '프로젝트관리',
-      items: [{ label: '프로젝트관리', icon: 'pi pi-fw pi-briefcase', to: '/' }],
+      items: [{ label: '프로젝트관리', icon: 'pi pi-fw pi-briefcase', to: '/project' }],
     },
     {
       label: 'UI Components',

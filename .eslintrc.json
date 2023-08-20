@@ -25,7 +25,7 @@
     "@typescript-eslint/no-unsafe-argument": "warn",
     "no-console": "warn",
     "no-loop-func": "error",
-    "no-shadow": "error",
+    "no-shadow": "warn",
     "no-var": "warn",
     "prefer-const": "warn",
     "comma-dangle": [
