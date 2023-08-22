@@ -7,7 +7,7 @@ const AppMenu = () => {
   const model: AppMenuItem[] = [
     {
       label: 'Home',
-      items: [{ label: '메인화면', icon: 'pi pi-fw pi-home', to: '/' }],
+      items: [{ label: '메인화면', icon: 'pi pi-fw pi-home', to: '/', target: '_self' }],
     },
     {
       label: '유저관리',
@@ -15,7 +15,10 @@ const AppMenu = () => {
     },
     {
       label: '제품관리',
-      items: [{ label: '제품관리', icon: 'pi pi-fw pi-box', to: '/product' }],
+      items: [
+        { label: '제품관리', icon: 'pi pi-fw pi-box', to: '/product' },
+        { label: '필요문서관리', icon: 'pi pi-fw pi-file', to: '/documents' },
+      ],
     },
     {
       label: '프로젝트관리',

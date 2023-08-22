@@ -16,7 +16,6 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  // const { store, props } = wrapper.useWrappedStore(rest)
   return (
     <html lang="en">
       <head>
