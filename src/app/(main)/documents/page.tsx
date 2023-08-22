@@ -75,21 +75,28 @@ const ListDemo = () => {
 
   const dataViewHeader = (
     <div className="flex flex-column md:flex-row md:justify-content-between gap-2">
-      <Dropdown
-        value={sortKey}
-        options={sortOptions}
-        optionLabel="label"
-        placeholder="문서명으로 정렬"
-        onChange={onSortChange}
-      />
-      <span className="p-input-icon-left">
-        <i className="pi pi-search" />
-        <InputText
-          value={globalFilterValue}
-          onChange={onFilter}
-          placeholder="Search by Name"
+      <div className="flex flex-row justify-content-between align-itmes-center gap-4">
+        <Dropdown
+          value={sortKey}
+          options={sortOptions}
+          optionLabel="label"
+          placeholder="문서명으로 정렬"
+          onChange={onSortChange}
         />
-      </span>
+        <span className="p-input-icon-left">
+          <i className="pi pi-search" />
+          <InputText
+            value={globalFilterValue}
+            onChange={onFilter}
+            placeholder="문서명으로 검색"
+          />
+        </span>
+        <Button
+          icon="pi pi-file-edit"
+          label="신규문서 등록"
+          className="p-button"
+        ></Button>
+      </div>
       <DataViewLayoutOptions
         layout={layout}
         onChange={(e) => setLayout(e.value as LayoutType)}
