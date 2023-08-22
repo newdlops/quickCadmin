@@ -1,11 +1,13 @@
-import { configureStore, ConfigureStoreOptions } from '@reduxjs/toolkit'
-import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
-import { createWrapper } from 'next-redux-wrapper'
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+import { configureStore } from '@reduxjs/toolkit'
+import { useDispatch, useSelector } from 'react-redux'
+import type { TypedUseSelectorHook } from 'react-redux'
+import type { ConfigureStoreOptions } from '@reduxjs/toolkit'
 
 import { api } from '../services/api'
 
 export const createStore = (
-  options?: ConfigureStoreOptions['preloadedState'] | undefined,
+  options?: ConfigureStoreOptions,
 ) =>
   configureStore({
     reducer: {
@@ -22,6 +24,3 @@ export type AppDispatch = typeof store.dispatch
 export const useAppDispatch: () => AppDispatch = useDispatch
 export type RootState = ReturnType<typeof store.getState>
 export const useTypedSelector: TypedUseSelectorHook<RootState> = useSelector
-export const wrapper = createWrapper(createStore, {
-  debug: true,
-})

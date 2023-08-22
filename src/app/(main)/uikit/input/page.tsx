@@ -1,32 +1,32 @@
-"use client";
-import React, { useEffect, useState } from "react";
-import { InputText } from "primereact/inputtext";
-import { InputTextarea } from "primereact/inputtextarea";
+"use client"
+import React, { useEffect, useState } from "react"
+import { InputText } from "primereact/inputtext"
+import { InputTextarea } from "primereact/inputtextarea"
 import {
   AutoComplete,
   AutoCompleteCompleteEvent,
-} from "primereact/autocomplete";
-import { Calendar } from "primereact/calendar";
-import { Chips } from "primereact/chips";
-import { Slider } from "primereact/slider";
-import { Knob } from "primereact/knob";
-import { Rating } from "primereact/rating";
-import { ColorPicker } from "primereact/colorpicker";
-import { RadioButton } from "primereact/radiobutton";
-import { Checkbox, CheckboxChangeEvent } from "primereact/checkbox";
-import { InputSwitch } from "primereact/inputswitch";
-import { ListBox } from "primereact/listbox";
-import { Dropdown } from "primereact/dropdown";
-import { ToggleButton } from "primereact/togglebutton";
-import { MultiSelect } from "primereact/multiselect";
-import { TreeSelect, TreeSelectSelectionKeysType } from "primereact/treeselect";
-import { SelectButton } from "primereact/selectbutton";
-import { Button } from "primereact/button";
-import { InputNumber } from "primereact/inputnumber";
-import { CountryService } from "../../../../demo/service/CountryService";
-import { NodeService } from "../../../../demo/service/NodeService";
-import { Demo } from "../../../../types/types";
-import { TreeNode } from "primereact/treenode";
+} from "primereact/autocomplete"
+import { Calendar } from "primereact/calendar"
+import { Chips } from "primereact/chips"
+import { Slider } from "primereact/slider"
+import { Knob } from "primereact/knob"
+import { Rating } from "primereact/rating"
+import { ColorPicker } from "primereact/colorpicker"
+import { RadioButton } from "primereact/radiobutton"
+import { Checkbox, CheckboxChangeEvent } from "primereact/checkbox"
+import { InputSwitch } from "primereact/inputswitch"
+import { ListBox } from "primereact/listbox"
+import { Dropdown } from "primereact/dropdown"
+import { ToggleButton } from "primereact/togglebutton"
+import { MultiSelect } from "primereact/multiselect"
+import { TreeSelect, TreeSelectSelectionKeysType } from "primereact/treeselect"
+import { SelectButton } from "primereact/selectbutton"
+import { Button } from "primereact/button"
+import { InputNumber } from "primereact/inputnumber"
+import { CountryService } from "../../../../demo/service/CountryService"
+import { NodeService } from "../../../../demo/service/NodeService"
+import { Demo } from "../../../../types/types"
+import { TreeNode } from "primereact/treenode"
 
 interface InputValue {
   name: string;
@@ -34,32 +34,32 @@ interface InputValue {
 }
 
 const InputDemo = () => {
-  const [floatValue, setFloatValue] = useState("");
-  const [autoValue, setAutoValue] = useState<Demo.Country[]>([]);
-  const [selectedAutoValue, setSelectedAutoValue] = useState(null);
+  const [floatValue, setFloatValue] = useState("")
+  const [autoValue, setAutoValue] = useState<Demo.Country[]>([])
+  const [selectedAutoValue, setSelectedAutoValue] = useState(null)
   const [autoFilteredValue, setAutoFilteredValue] = useState<Demo.Country[]>(
-    []
-  );
-  const [calendarValue, setCalendarValue] = useState(new Date());
-  const [inputNumberValue, setInputNumberValue] = useState<number | null>(null);
-  const [chipsValue, setChipsValue] = useState<any[]>([]);
-  const [sliderValue, setSliderValue] = useState<number | string>(50);
-  const [ratingValue, setRatingValue] = useState<number | undefined>(undefined);
-  const [colorValue, setColorValue] = useState("1976D2");
-  const [knobValue, setKnobValue] = useState(20);
-  const [radioValue, setRadioValue] = useState(null);
-  const [checkboxValue, setCheckboxValue] = useState<string[]>([]);
-  const [switchValue, setSwitchValue] = useState(false);
-  const [listboxValue, setListboxValue] = useState(null);
-  const [dropdownValue, setDropdownValue] = useState(null);
-  const [multiselectValue, setMultiselectValue] = useState(null);
-  const [toggleValue, setToggleValue] = useState(false);
-  const [selectButtonValue1, setSelectButtonValue1] = useState(null);
-  const [selectButtonValue2, setSelectButtonValue2] = useState(null);
-  const [inputGroupValue, setInputGroupValue] = useState(false);
+    [],
+  )
+  const [calendarValue, setCalendarValue] = useState(new Date())
+  const [inputNumberValue, setInputNumberValue] = useState<number | null>(null)
+  const [chipsValue, setChipsValue] = useState<any[]>([])
+  const [sliderValue, setSliderValue] = useState<number | string>(50)
+  const [ratingValue, setRatingValue] = useState<number | undefined>(undefined)
+  const [colorValue, setColorValue] = useState("1976D2")
+  const [knobValue, setKnobValue] = useState(20)
+  const [radioValue, setRadioValue] = useState(null)
+  const [checkboxValue, setCheckboxValue] = useState<string[]>([])
+  const [switchValue, setSwitchValue] = useState(false)
+  const [listboxValue, setListboxValue] = useState(null)
+  const [dropdownValue, setDropdownValue] = useState(null)
+  const [multiselectValue, setMultiselectValue] = useState(null)
+  const [toggleValue, setToggleValue] = useState(false)
+  const [selectButtonValue1, setSelectButtonValue1] = useState(null)
+  const [selectButtonValue2, setSelectButtonValue2] = useState(null)
+  const [inputGroupValue, setInputGroupValue] = useState(false)
   const [selectedNode, setSelectedNode] =
-    useState<TreeSelectSelectionKeysType | null>(null);
-  const [treeSelectNodes, setTreeSelectNodes] = useState<TreeNode[]>([]);
+    useState<TreeSelectSelectionKeysType | null>(null)
+  const [treeSelectNodes, setTreeSelectNodes] = useState<TreeNode[]>([])
 
   const listboxValues: InputValue[] = [
     { name: "New York", code: "NY" },
@@ -67,7 +67,7 @@ const InputDemo = () => {
     { name: "London", code: "LDN" },
     { name: "Istanbul", code: "IST" },
     { name: "Paris", code: "PRS" },
-  ];
+  ]
 
   const dropdownValues: InputValue[] = [
     { name: "New York", code: "NY" },
@@ -75,7 +75,7 @@ const InputDemo = () => {
     { name: "London", code: "LDN" },
     { name: "Istanbul", code: "IST" },
     { name: "Paris", code: "PRS" },
-  ];
+  ]
 
   const multiselectValues: InputValue[] = [
     { name: "Australia", code: "AU" },
@@ -88,60 +88,56 @@ const InputDemo = () => {
     { name: "Japan", code: "JP" },
     { name: "Spain", code: "ES" },
     { name: "United States", code: "US" },
-  ];
+  ]
 
   const selectButtonValues1: InputValue[] = [
     { name: "Option 1", code: "O1" },
     { name: "Option 2", code: "O2" },
     { name: "Option 3", code: "O3" },
-  ];
+  ]
 
   const selectButtonValues2 = [
     { name: "Option 1", code: "O1" },
     { name: "Option 2", code: "O2" },
     { name: "Option 3", code: "O3" },
-  ];
+  ]
 
   useEffect(() => {
-    CountryService.getCountries().then((data) => setAutoValue(data));
-    NodeService.getTreeNodes().then((data) => setTreeSelectNodes(data));
-  }, []);
+    CountryService.getCountries().then((data) => setAutoValue(data))
+    NodeService.getTreeNodes().then((data) => setTreeSelectNodes(data))
+  }, [])
 
   const searchCountry = (event: AutoCompleteCompleteEvent) => {
     setTimeout(() => {
       if (!event.query.trim().length) {
-        setAutoFilteredValue([...autoValue]);
+        setAutoFilteredValue([...autoValue])
       } else {
         setAutoFilteredValue(
-          autoValue.filter((country) => {
-            return country.name
-              .toLowerCase()
-              .startsWith(event.query.toLowerCase());
-          })
-        );
+          autoValue.filter((country) => country.name
+            .toLowerCase()
+            .startsWith(event.query.toLowerCase())),
+        )
       }
-    }, 250);
-  };
+    }, 250)
+  }
 
   const onCheckboxChange = (e: CheckboxChangeEvent) => {
-    let selectedValue = [...checkboxValue];
-    if (e.checked) selectedValue.push(e.value);
-    else selectedValue.splice(selectedValue.indexOf(e.value), 1);
+    const selectedValue = [...checkboxValue]
+    if (e.checked) selectedValue.push(e.value)
+    else selectedValue.splice(selectedValue.indexOf(e.value), 1)
 
-    setCheckboxValue(selectedValue);
-  };
+    setCheckboxValue(selectedValue)
+  }
 
-  const itemTemplate = (option: InputValue) => {
-    return (
-      <div className="flex align-items-center">
-        <span
-          className={`mr-2 flag flag-${option.code.toLowerCase()}`}
-          style={{ width: "18px", height: "12px" }}
-        />
-        <span>{option.name}</span>
-      </div>
-    );
-  };
+  const itemTemplate = (option: InputValue) => (
+    <div className="flex align-items-center">
+      <span
+        className={`mr-2 flag flag-${option.code.toLowerCase()}`}
+        style={{ width: "18px", height: "12px" }}
+      />
+      <span>{option.name}</span>
+    </div>
+  )
 
   return (
     <div className="grid p-fluid">
@@ -497,7 +493,7 @@ const InputDemo = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default InputDemo;
+export default InputDemo

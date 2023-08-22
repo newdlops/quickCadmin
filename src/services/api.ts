@@ -1,5 +1,4 @@
 import { createApi, fetchBaseQuery, retry } from '@reduxjs/toolkit/query/react'
-import { RootState } from '../stores/store'
 
 // Create our baseQuery instance
 const baseQuery = fetchBaseQuery({
@@ -39,17 +38,15 @@ export const api = createApi({
    * Tag types must be defined in the original API definition
    * for any tags that would be provided by injected endpoints
    */
-  tagTypes: ['Time', 'Posts', 'Counter'],
+  tagTypes: ['User'],
   /**
    * This api has endpoints injected in adjacent files,
    * which is why no endpoints are shown below.
    * If you want all endpoints defined in the same file, they could be included here instead
    */
-  endpoints: () => ({}),
-})
-
-export const enhancedApi = api.enhanceEndpoints({
-  endpoints: () => ({
-    getPost: () => 'test',
+  endpoints: (_builder) => ({
+    default: _builder.query({
+      query: (name: string) => `${name}`,
+    }),
   }),
 })

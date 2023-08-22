@@ -1,29 +1,23 @@
 "use client"
 import { Button } from "primereact/button"
 import { Column } from "primereact/column"
-import { DataTable } from "primereact/datatable"
+import { DataTable, DataTableCellSelection, DataTableSelectionCellChangeEvent, DataTableStateEvent, DataTableValueArray } from "primereact/datatable"
 import { Dialog } from "primereact/dialog"
-import { FileUpload } from "primereact/fileupload"
-import {
-  InputNumber,
-  InputNumberValueChangeEvent,
-} from "primereact/inputnumber"
 import { InputText } from "primereact/inputtext"
-import { InputTextarea } from "primereact/inputtextarea"
-import { RadioButton, RadioButtonChangeEvent } from "primereact/radiobutton"
-import { Rating } from "primereact/rating"
 import { Toast } from "primereact/toast"
 import { Toolbar } from "primereact/toolbar"
 import { classNames } from "primereact/utils"
-import React, { useEffect, useRef, useState } from "react"
-import { ProductService } from "./ProductService"
-import { Demo } from '../../../types/demo'
-import { useLazyGetUsersQuery, useGetUsersQuery } from '@/services/user'
+import React, { useRef, useState } from "react"
+import { useGetUsersQuery, useDeleteUserMutation, useUpdateUserMutation, useCreateUserMutation, useDeleteUsersMutation } from '@/services/user'
+import { ToggleButton, ToggleButtonChangeEvent } from 'primereact/togglebutton'
 
-interface User {
+export interface User {
+  [index:string|number]:string|number|boolean|undefined;
   _id?: string;
   username: string;
+  email: string;
   password: string;
+  isDelete: boolean;
 }
 
 const User = () => {
@@ -31,118 +25,129 @@ const User = () => {
     _id: "",
     username: "",
     password: "",
+    email: "",
+    isDelete: false,
   }
-  const [lazyState, setLazyState] = useState({
+  const [lazyState, setLazyState] = useState<DataTableStateEvent>({
     first: 0,
-    rows: 2,
+    rows: 10,
     page: 0,
     sortField: '',
     sortOrder: 1,
     filters: {},
+    multiSortMeta: [],
   })
-  
+
   const [users, setUsers] = useState<User[]>([])
-  const [productDialog, setProductDialog] = useState(false)
-  const [deleteProductDialog, setDeleteProductDialog] = useState(false)
-  const [deleteProductsDialog, setDeleteProductsDialog] = useState(false)
+  const [userDialog, setUserDialog] = useState(false)
+  const [userCreate, setUserCreate] = useState(false)
+  const [deleteUserDialog, setDeleteUserDialog] = useState(false)
+  const [deleteUsersDialog, setDeleteUsersDialog] = useState(false)
   const [user, setUser] = useState<User>(emptyUser)
-  const [selectedUsers, setSelectedUsers] = useState<User[]>([])
+  const [selectedUsers, setSelectedUsers] = useState<DataTableCellSelection<DataTableValueArray>>([] as unknown as DataTableCellSelection<DataTableValueArray>)
   const [submitted, setSubmitted] = useState(false)
   const [globalFilter, setGlobalFilter] = useState<string>("")
   const toast = useRef<Toast>(null)
-  const dt = useRef<DataTable<User[]>>(null)
-  const { data, error, isLoading } = useGetUsersQuery({ page: lazyState.page, itemsPerPage: lazyState.rows, sortField: lazyState.sortField, sortOrder: lazyState.sortOrder, globalFilter: globalFilter })
-
-  useEffect(() => {
-    console.log(data?.msg, globalFilter)
-  }, [])
-
+  const dt = useRef<DataTable<DataTableValueArray>>(null)
+  const { data, isLoading } = useGetUsersQuery({ page: lazyState.page, itemsPerPage: lazyState.rows, sortField: lazyState.sortField, sortOrder: lazyState.sortOrder, globalFilter: globalFilter })
+  const [ deleteUser ] = useDeleteUserMutation()
+  const [ updateUser ] = useUpdateUserMutation()
+  const [ createUser ] = useCreateUserMutation()
+  const [ deleteUsers ] = useDeleteUsersMutation()
+  const tableData = (data?.msg.users) ?? ([] as DataTableValueArray)
   const openNew = () => {
     setUser(emptyUser)
+    setUserCreate(true)
     setSubmitted(false)
-    setProductDialog(true)
+    setUserDialog(true)
   }
 
   const hideDialog = () => {
     setSubmitted(false)
-    setProductDialog(false)
+    setUserCreate(false)
+    setUserDialog(false)
   }
 
-  const hideDeleteProductDialog = () => {
-    setDeleteProductDialog(false)
+  const hideDeleteUserDialog = () => {
+    setDeleteUserDialog(false)
   }
 
-  const hideDeleteProductsDialog = () => {
-    setDeleteProductsDialog(false)
+  const hideDeleteUsersDialog = () => {
+    setDeleteUsersDialog(false)
   }
 
-  const onPage = (event) => {
+  const onPage = (event: DataTableStateEvent) => {
     setLazyState(event)
   }
 
-  const onSort = (event) => {
+  const onSort = (event: DataTableStateEvent) => {
     setLazyState(event)
   }
 
-  const onFilter = (event) => {
-    console.log('onfilter', event)
+  const onFilter = (event: DataTableStateEvent) => {
     event['first'] = 0
     setLazyState(event)
   }
 
-  const saveProduct = () => {
+  const onSelectionChange = (e: DataTableSelectionCellChangeEvent<DataTableValueArray>) => {
+    setSelectedUsers(e.value)
+  }
+
+  const saveUser = () => {
     setSubmitted(true)
 
-    if (user.name.trim()) {
-      const _products = [...users]
-      const _product = { ...user }
-      if (user.id) {
-        const index = findIndexById(user.id)
+    if (user.username.trim()) {
+      const _users = [...users]
+      const _user = { ...user }
+      if (user._id) {
+        const index = findIndexById(user._id)
 
-        _products[index] = _product
+        _users[index] = _user
         toast.current?.show({
           severity: "success",
-          summary: "Successful",
-          detail: "Product Updated",
+          summary: "작업성공",
+          detail: "유저 정보가 업데이트되었습니다.",
           life: 3000,
         })
+        updateUser(_user)
       } else {
-        _product.id = createId()
-        _product.image = "product-placeholder.svg"
-        _products.push(_product)
+        _users.push(_user)
         toast.current?.show({
           severity: "success",
-          summary: "Successful",
-          detail: "Product Created",
+          summary: "작업성공",
+          detail: "유저가 생성되었습니다.",
           life: 3000,
         })
+        delete _user._id
+        createUser(_user)
       }
-
-      setUsers(_products)
-      setProductDialog(false)
+      setUsers(_users)
+      setUserDialog(false)
+      setUserCreate(false)
       setUser(emptyUser)
     }
   }
 
-  const editProduct = (product: User) => {
-    setUser({ ...product })
-    setProductDialog(true)
+  const editUser = (_user: User) => {
+    setUser({ ..._user })
+    setUserDialog(true)
   }
 
-  const confirmDeleteProduct = (product: User) => {
-    setUser(product)
-    setDeleteProductDialog(true)
+  const confirmDeleteUser = (_user: User) => {
+    setUser(_user)
+    setDeleteUserDialog(true)
   }
 
-  const deleteProduct = () => {
-    const _products = users.filter((val) => val.id !== user.id)
-    setUsers(_products)
-    setDeleteProductDialog(false)
+  const userDelete = () => {
+    deleteUser(user?._id??'')
+    const _users = users.filter((val) => val._id !== user._id)
+    setUsers(_users)
+    setDeleteUserDialog(false)
     setUser(emptyUser)
     toast.current?.show({
       severity: "success",
-      summary: "Successful",
-      detail: "Product Deleted",
+      summary: "작업성공",
+      detail: "유저가 삭제되었습니다.",
       life: 3000,
     })
   }
@@ -150,7 +155,7 @@ const User = () => {
   const findIndexById = (id: string) => {
     let index = -1
     for (let i = 0; i < users.length; i++) {
-      if (users[i].id === id) {
+      if (users[i]._id === id) {
         index = i
         break
       }
@@ -159,33 +164,23 @@ const User = () => {
     return index
   }
 
-  const createId = () => {
-    let id = ""
-    const chars =
-      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
-    for (let i = 0; i < 5; i++) {
-      id += chars.charAt(Math.floor(Math.random() * chars.length))
-    }
-    return id
-  }
-
   const exportCSV = () => {
     dt.current?.exportCSV()
   }
 
   const confirmDeleteSelected = () => {
-    setDeleteProductsDialog(true)
+    setDeleteUsersDialog(true)
   }
 
-  const deleteSelectedProducts = () => {
-    const _products = users.filter((val) => !selectedUsers?.includes(val))
-    setUsers(_products)
-    setDeleteProductsDialog(false)
+  const deleteSelectedUsers = () => {
+    deleteUsers(selectedUsers.map((user:User)=>user._id))
+    setUsers(selectedUsers as unknown as User[])
+    setDeleteUsersDialog(false)
     setSelectedUsers([])
     toast.current?.show({
       severity: "success",
       summary: "Successful",
-      detail: "Products Deleted",
+      detail: "선택한 유저가 삭제되었습니다.",
       life: 3000,
     })
   }
@@ -195,21 +190,17 @@ const User = () => {
     name: string,
   ) => {
     const val = (e.target && e.target.value) || ""
-    const _product = { ...user }
-    _product[`${name}`] = val
+    const _user = { ...user }
+    _user[`${name}`] = val
 
-    setUser(_product)
+    setUser(_user)
   }
 
-  const onInputNumberChange = (
-    e: InputNumberValueChangeEvent,
-    name: string,
+  const onToggleDelete = (
+    e: ToggleButtonChangeEvent,
   ) => {
-    const val = e.value || 0
-    const _product = { ...user }
-    _product[`${name}`] = val
-
-    setUser(_product)
+    const _user = { ...user, isDelete: e.value}
+    setUser(_user)
   }
 
   const leftToolbarTemplate = () => (
@@ -227,7 +218,7 @@ const User = () => {
           icon="pi pi-trash"
           severity="danger"
           onClick={confirmDeleteSelected}
-          disabled={!selectedUsers || !selectedUsers.length}
+          disabled={!selectedUsers}
         />
       </div>
     </React.Fragment>
@@ -251,13 +242,13 @@ const User = () => {
         rounded
         severity="success"
         className="mr-2"
-        onClick={() => editProduct(rowData)}
+        onClick={() => editUser(rowData)}
       />
       <Button
         icon="pi pi-trash"
         rounded
         severity="warning"
-        onClick={() => confirmDeleteProduct(rowData)}
+        onClick={() => confirmDeleteUser(rowData)}
       />
     </>
   )
@@ -276,36 +267,36 @@ const User = () => {
     </div>
   )
 
-  const productDialogFooter = (
+  const userDialogFooter = (
     <>
       <Button label="취소" icon="pi pi-times" text onClick={hideDialog} />
-      <Button label="적용" icon="pi pi-check" text onClick={saveProduct} />
+      <Button label={userCreate?"등록":"수정"} icon="pi pi-check" text onClick={saveUser} />
     </>
   )
-  const deleteProductDialogFooter = (
+  const deleteUserDialogFooter = (
     <>
       <Button
         label="아니오"
         icon="pi pi-times"
         text
-        onClick={hideDeleteProductDialog}
+        onClick={hideDeleteUserDialog}
       />
-      <Button label="예" icon="pi pi-check" text onClick={deleteProduct} />
+      <Button label="예" icon="pi pi-check" text onClick={userDelete} />
     </>
   )
-  const deleteProductsDialogFooter = (
+  const deleteUsersDialogFooter = (
     <>
       <Button
         label="아니오"
         icon="pi pi-times"
         text
-        onClick={hideDeleteProductsDialog}
+        onClick={hideDeleteUsersDialog}
       />
       <Button
         label="예"
         icon="pi pi-check"
         text
-        onClick={deleteSelectedProducts}
+        onClick={deleteSelectedUsers}
       />
     </>
   )
@@ -323,12 +314,11 @@ const User = () => {
 
           <DataTable
             ref={dt}
-            value={data?.msg?.users}
+            value={tableData}
             selection={selectedUsers}
-            onSelectionChange={(e) =>
-              setSelectedUsers(e.value as User[])
-            }
-            resizableColumns
+            onSelectionChange={onSelectionChange}
+            cellSelection
+            selectionMode='multiple'
             dataKey="_id"
             paginator
             rows={lazyState.rows}
@@ -347,10 +337,10 @@ const User = () => {
             removableSort
             onSort={onSort}
             sortField={lazyState.sortField}
-            sortOrder={lazyState.sortOrder as 0|1|-1}
+            sortOrder={lazyState.sortOrder}
             onFilter={onFilter}
             filters={lazyState.filters}
-            loading={isLoading as boolean}
+            loading={isLoading}
           >
             <Column
               selectionMode="multiple"
@@ -392,71 +382,80 @@ const User = () => {
           </DataTable>
 
           <Dialog
-            visible={productDialog}
+            visible={userDialog}
             style={{ width: "450px" }}
-            header="유저정보 입력"
+            header={`유저정보 ${userCreate?"등록":"수정"}`}
             modal
             className="p-fluid"
-            footer={productDialogFooter}
+            footer={userDialogFooter}
             onHide={hideDialog}
           >
             <div className="field">
-              <label htmlFor="name">이름</label>
+              <label htmlFor="username">이름</label>
               <InputText
-                id="name"
-                value={user.name}
-                onChange={(e) => onInputChange(e, "name")}
+                id="username"
+                value={user.username}
+                onChange={(e) => onInputChange(e, "username")}
                 required
                 autoFocus
                 className={classNames({
-                  "p-invalid": submitted && !user.name,
+                  "p-invalid": submitted && !user.username,
                 })}
               />
-              {submitted && !user.name && (
+              {submitted && !user.username && (
                 <small className="p-invalid">이름을 입력하세요</small>
               )}
             </div>
             <div className="field">
-              <label htmlFor="name">이메일</label>
+              <label htmlFor="email">이메일</label>
               <InputText
-                id="name"
-                value={user.name}
-                onChange={(e) => onInputChange(e, "name")}
+                id="email"
+                value={user.email}
+                onChange={(e) => onInputChange(e, "email")}
                 required
                 autoFocus
                 className={classNames({
-                  "p-invalid": submitted && !user.name,
+                  "p-invalid": submitted && !user.email,
                 })}
               />
-              {submitted && !user.name && (
+              {submitted && !user.email && (
                 <small className="p-invalid">이메일을 입력하세요</small>
               )}
             </div>
             <div className="field">
-              <label htmlFor="name">패스워드</label>
+              <label htmlFor="password">패스워드</label>
               <InputText
-                id="name"
-                value={user.name}
-                onChange={(e) => onInputChange(e, "name")}
+                id="password"
+                value={user.password}
+                onChange={(e) => onInputChange(e, "password")}
                 required
                 autoFocus
                 className={classNames({
-                  "p-invalid": submitted && !user.name,
+                  "p-invalid": submitted && !user.password,
                 })}
               />
-              {submitted && !user.name && (
+              {submitted && !user.password && (
                 <small className="p-invalid">패스워드를 입력하세요</small>
               )}
             </div>
+            {!userCreate&&<div className="field">
+              <label htmlFor="password">삭제됨</label>
+              <ToggleButton
+                checked={user.isDelete}
+                onChange={onToggleDelete}
+                onLabel="예"
+                offLabel="아니오"
+              />
+            </div>}
           </Dialog>
 
           <Dialog
-            visible={deleteProductDialog}
+            visible={deleteUserDialog}
             style={{ width: "450px" }}
             header="확인"
             modal
-            footer={deleteProductDialogFooter}
-            onHide={hideDeleteProductDialog}
+            footer={deleteUserDialogFooter}
+            onHide={hideDeleteUserDialog}
           >
             <div className="flex align-items-center">
               <i
@@ -465,19 +464,19 @@ const User = () => {
               />
               {user && (
                 <span>
-                  <b>{user.name}</b>를 삭제하시겠습니까?
+                  <b>{user.username}</b>를 삭제하시겠습니까?
                 </span>
               )}
             </div>
           </Dialog>
 
           <Dialog
-            visible={deleteProductsDialog}
+            visible={deleteUsersDialog}
             style={{ width: "450px" }}
             header="확인"
             modal
-            footer={deleteProductsDialogFooter}
-            onHide={hideDeleteProductsDialog}
+            footer={deleteUsersDialogFooter}
+            onHide={hideDeleteUsersDialog}
           >
             <div className="flex align-items-center">
               <i
