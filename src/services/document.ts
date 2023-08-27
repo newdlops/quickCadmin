@@ -14,7 +14,7 @@ const documentApi = api.injectEndpoints({
   endpoints: (build) => ({
     getDocuments: build.query<DocumentResponse, PageRequestArgs>({
       query: ({ page, itemsPerPage, sortField, sortOrder, globalFilter }: PageRequestArgs) => `/document/documents?page=${page}&itemsPerPage=${itemsPerPage}&sortField=${sortField}&sortOrder=${sortOrder}&globalFilter=${globalFilter}`,
-      providesTags: (result?: DocumentResponse) => (result ? result?.msg?.documents?.map(({_id}) => ({ type: 'Document', id: _id })) : ['Document']),
+      providesTags: (result?: DocumentResponse) => (result ? result?.msg?.documents?.map(({_id}) => ({ type: 'Document' as const, id: _id })).concat({ type: 'Document', id: 'LIST'}) : [{ type: 'Document', id: 'LIST'}]),
     }),
     findDocumentById: build.query<{ status: string, msg: { totalNumber: number; documents: Document[]; } }, string>({
       query: (id: string) => `/document/document/${id}`,
@@ -34,7 +34,7 @@ const documentApi = api.injectEndpoints({
         method: 'POST',
         body: body,
       }),
-      invalidatesTags: ['Document'],
+      invalidatesTags: [{type:'Document', id:'LIST'}],
     }),
   }),
 })

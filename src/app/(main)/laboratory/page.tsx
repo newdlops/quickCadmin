@@ -1,7 +1,7 @@
 "use client"
 import { Button } from "primereact/button"
 import { Column } from "primereact/column"
-import { DataTable, DataTableCellSelection, DataTableSelectionCellChangeEvent, DataTableStateEvent, DataTableValueArray } from "primereact/datatable"
+import { DataTable, DataTableStateEvent, DataTableValueArray } from "primereact/datatable"
 import { Dialog } from "primereact/dialog"
 import { InputText } from "primereact/inputtext"
 import { Toast } from "primereact/toast"
@@ -124,15 +124,12 @@ const Laboratory = () => {
           life: 3000,
         })
         delete _laboratory._id
-        createLaboratory(_laboratory).then(()=>{
-          tableData.length<1&&refetch().catch(e=>console.log(e))
-        }).catch(e=>console.log(e))
+        createLaboratory(_laboratory).catch(e=>console.log(e))
       }
       setLaboratorys(_laboratorys)
       setLaboratoryDialog(false)
       setLaboratoryCreate(false)
       setLaboratory(emptyLaboratory)
-      // tableData.length < 1 && refetch().catch(e=>console.log(e))
     }
   }
 

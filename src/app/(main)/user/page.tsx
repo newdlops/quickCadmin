@@ -120,9 +120,7 @@ const User = () => {
           life: 3000,
         })
         delete _user._id
-        createUser(_user).then(()=>{
-          tableData.length<1&&refetch().catch(e=>console.log(e))
-        }).catch(e=>console.log(e))
+        createUser(_user).catch(e=>console.log(e))
       }
       setUsers(_users)
       setUserDialog(false)

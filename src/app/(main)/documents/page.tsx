@@ -46,7 +46,7 @@ const DocumentList = () => {
   const [isCreate, setCreate] = useState(false)
   const [submitted, setSubmitted] = useState(false)
 
-  const { data, isLoading } = useGetDocumentsQuery({ page: lazyState.page, itemsPerPage: lazyState.rows, sortField: lazyState.sortField, sortOrder: lazyState.sortOrder, globalFilter: globalFilter })
+  const { data, isLoading, refetch } = useGetDocumentsQuery({ page: lazyState.page, itemsPerPage: lazyState.rows, sortField: lazyState.sortField, sortOrder: lazyState.sortOrder, globalFilter: globalFilter })
   const [ updateDocument, {isLoading: isUpdating} ] = useUpdateDocumentMutation()
   const [ createDocument, {isLoading: isCreating} ] = useCreateDocumentMutation()
   const isDataLoading = isLoading || isUpdating || isCreating

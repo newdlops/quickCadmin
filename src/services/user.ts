@@ -9,7 +9,7 @@ interface UserResponse {
   }
 }
 
-export interface UserArgs {
+export interface PageRequestArgs {
   page?: number;
   itemsPerPage: number;
   sortField: string;
@@ -19,9 +19,9 @@ export interface UserArgs {
 
 const userApi = api.injectEndpoints({
   endpoints: (build) => ({
-    getUsers: build.query<UserResponse, UserArgs>({
-      query: ({ page, itemsPerPage, sortField, sortOrder, globalFilter }: UserArgs) => `/user/users?page=${page}&itemsPerPage=${itemsPerPage}&sortField=${sortField}&sortOrder=${sortOrder}&globalFilter=${globalFilter}`,
-      providesTags: (result?: UserResponse) => (result ? result?.msg?.users?.map(({_id}) => ({ type: 'User', id: _id })) : ['User']),
+    getUsers: build.query<UserResponse, PageRequestArgs>({
+      query: ({ page, itemsPerPage, sortField, sortOrder, globalFilter }: PageRequestArgs) => `/user/users?page=${page}&itemsPerPage=${itemsPerPage}&sortField=${sortField}&sortOrder=${sortOrder}&globalFilter=${globalFilter}`,
+      providesTags: (result?: UserResponse) => (result ? result?.msg?.users?.map(({_id}) => ({ type: 'User' as const, id: _id })).concat({ type: 'User', id: 'LIST'}) : [{ type: 'User', id: 'LIST'}]),
     }),
     findUserById: build.query<{ status: string, msg: { totalNumber: number; users: User[]; } }, string>({
       query: (id: string) => `/user/user/${id}`,
@@ -48,7 +48,7 @@ const userApi = api.injectEndpoints({
         method: 'POST',
         body: body,
       }),
-      invalidatesTags: ['User'],
+      invalidatesTags: [{ type: 'User', id: 'LIST'}],
     }),
     deleteUsers: build.mutation<UserResponse, string[]>({
       query: (ids: string[]) => ({
