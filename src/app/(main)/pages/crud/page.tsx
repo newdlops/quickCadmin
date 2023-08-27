@@ -1,27 +1,27 @@
 /* eslint-disable @next/next/no-img-element */
-"use client";
-import { Button } from "primereact/button";
-import { Column } from "primereact/column";
-import { DataTable } from "primereact/datatable";
-import { Dialog } from "primereact/dialog";
-import { FileUpload } from "primereact/fileupload";
+"use client"
+import { Button } from "primereact/button"
+import { Column } from "primereact/column"
+import { DataTable } from "primereact/datatable"
+import { Dialog } from "primereact/dialog"
+import { FileUpload } from "primereact/fileupload"
 import {
   InputNumber,
   InputNumberValueChangeEvent,
-} from "primereact/inputnumber";
-import { InputText } from "primereact/inputtext";
-import { InputTextarea } from "primereact/inputtextarea";
-import { RadioButton, RadioButtonChangeEvent } from "primereact/radiobutton";
-import { Rating } from "primereact/rating";
-import { Toast } from "primereact/toast";
-import { Toolbar } from "primereact/toolbar";
-import { classNames } from "primereact/utils";
-import React, { useEffect, useRef, useState } from "react";
-import { ProductService } from "../../../../demo/service/ProductService";
-import { Demo } from "../../../../types/types";
+} from "primereact/inputnumber"
+import { InputText } from "primereact/inputtext"
+import { InputTextarea } from "primereact/inputtextarea"
+import { RadioButton, RadioButtonChangeEvent } from "primereact/radiobutton"
+import { Rating } from "primereact/rating"
+import { Toast } from "primereact/toast"
+import { Toolbar } from "primereact/toolbar"
+import { classNames } from "primereact/utils"
+import React, { useEffect, useRef, useState } from "react"
+import { ProductService } from "../../../../demo/service/ProductService"
+import { Demo } from "../../../../types/types"
 
 const Crud = () => {
-  let emptyProduct: Demo.Product = {
+  const emptyProduct: Demo.Product = {
     id: "",
     name: "",
     image: "",
@@ -31,311 +31,289 @@ const Crud = () => {
     quantity: 0,
     rating: 0,
     inventoryStatus: "INSTOCK",
-  };
+  }
 
-  const [products, setProducts] = useState<Demo.Product[]>([]);
-  const [productDialog, setProductDialog] = useState(false);
-  const [deleteProductDialog, setDeleteProductDialog] = useState(false);
-  const [deleteProductsDialog, setDeleteProductsDialog] = useState(false);
-  const [product, setProduct] = useState<Demo.Product>(emptyProduct);
-  const [selectedProducts, setSelectedProducts] = useState<Demo.Product[]>([]);
-  const [submitted, setSubmitted] = useState(false);
-  const [globalFilter, setGlobalFilter] = useState("");
-  const toast = useRef<Toast>(null);
-  const dt = useRef<DataTable<Demo.Product[]>>(null);
+  const [products, setProducts] = useState<Demo.Product[]>([])
+  const [productDialog, setProductDialog] = useState(false)
+  const [deleteProductDialog, setDeleteProductDialog] = useState(false)
+  const [deleteProductsDialog, setDeleteProductsDialog] = useState(false)
+  const [product, setProduct] = useState<Demo.Product>(emptyProduct)
+  const [selectedProducts, setSelectedProducts] = useState<Demo.Product[]>([])
+  const [submitted, setSubmitted] = useState(false)
+  const [globalFilter, setGlobalFilter] = useState("")
+  const toast = useRef<Toast>(null)
+  const dt = useRef<DataTable<Demo.Product[]>>(null)
 
   useEffect(() => {
-    ProductService.getProducts().then((data) => setProducts(data));
-  }, []);
+    ProductService.getProducts().then((data) => setProducts(data))
+  }, [])
 
-  const formatCurrency = (value: number) => {
-    return value.toLocaleString("en-US", {
-      style: "currency",
-      currency: "USD",
-    });
-  };
+  const formatCurrency = (value: number) => value.toLocaleString("en-US", {
+    style: "currency",
+    currency: "USD",
+  })
 
   const openNew = () => {
-    setProduct(emptyProduct);
-    setSubmitted(false);
-    setProductDialog(true);
-  };
+    setProduct(emptyProduct)
+    setSubmitted(false)
+    setProductDialog(true)
+  }
 
   const hideDialog = () => {
-    setSubmitted(false);
-    setProductDialog(false);
-  };
+    setSubmitted(false)
+    setProductDialog(false)
+  }
 
   const hideDeleteProductDialog = () => {
-    setDeleteProductDialog(false);
-  };
+    setDeleteProductDialog(false)
+  }
 
   const hideDeleteProductsDialog = () => {
-    setDeleteProductsDialog(false);
-  };
+    setDeleteProductsDialog(false)
+  }
 
   const saveProduct = () => {
-    setSubmitted(true);
+    setSubmitted(true)
 
     if (product.name.trim()) {
-      let _products = [...products];
-      let _product = { ...product };
+      const _products = [...products]
+      const _product = { ...product }
       if (product.id) {
-        const index = findIndexById(product.id);
+        const index = findIndexById(product.id)
 
-        _products[index] = _product;
+        _products[index] = _product
         toast.current?.show({
           severity: "success",
           summary: "Successful",
           detail: "Product Updated",
           life: 3000,
-        });
+        })
       } else {
-        _product.id = createId();
-        _product.image = "product-placeholder.svg";
-        _products.push(_product);
+        _product.id = createId()
+        _product.image = "product-placeholder.svg"
+        _products.push(_product)
         toast.current?.show({
           severity: "success",
           summary: "Successful",
           detail: "Product Created",
           life: 3000,
-        });
+        })
       }
 
-      setProducts(_products);
-      setProductDialog(false);
-      setProduct(emptyProduct);
+      setProducts(_products)
+      setProductDialog(false)
+      setProduct(emptyProduct)
     }
-  };
+  }
 
   const editProduct = (product: Demo.Product) => {
-    setProduct({ ...product });
-    setProductDialog(true);
-  };
+    setProduct({ ...product })
+    setProductDialog(true)
+  }
 
   const confirmDeleteProduct = (product: Demo.Product) => {
-    setProduct(product);
-    setDeleteProductDialog(true);
-  };
+    setProduct(product)
+    setDeleteProductDialog(true)
+  }
 
   const deleteProduct = () => {
-    let _products = products.filter((val) => val.id !== product.id);
-    setProducts(_products);
-    setDeleteProductDialog(false);
-    setProduct(emptyProduct);
+    const _products = products.filter((val) => val.id !== product.id)
+    setProducts(_products)
+    setDeleteProductDialog(false)
+    setProduct(emptyProduct)
     toast.current?.show({
       severity: "success",
       summary: "Successful",
       detail: "Product Deleted",
       life: 3000,
-    });
-  };
+    })
+  }
 
   const findIndexById = (id: string) => {
-    let index = -1;
+    let index = -1
     for (let i = 0; i < products.length; i++) {
       if (products[i].id === id) {
-        index = i;
-        break;
+        index = i
+        break
       }
     }
 
-    return index;
-  };
+    return index
+  }
 
   const createId = () => {
-    let id = "";
-    let chars =
-      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    let id = ""
+    const chars =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
     for (let i = 0; i < 5; i++) {
-      id += chars.charAt(Math.floor(Math.random() * chars.length));
+      id += chars.charAt(Math.floor(Math.random() * chars.length))
     }
-    return id;
-  };
+    return id
+  }
 
   const exportCSV = () => {
-    dt.current?.exportCSV();
-  };
+    dt.current?.exportCSV()
+  }
 
   const confirmDeleteSelected = () => {
-    setDeleteProductsDialog(true);
-  };
+    setDeleteProductsDialog(true)
+  }
 
   const deleteSelectedProducts = () => {
-    let _products = products.filter((val) => !selectedProducts?.includes(val));
-    setProducts(_products);
-    setDeleteProductsDialog(false);
-    setSelectedProducts([]);
+    const _products = products.filter((val) => !selectedProducts?.includes(val))
+    setProducts(_products)
+    setDeleteProductsDialog(false)
+    setSelectedProducts([])
     toast.current?.show({
       severity: "success",
       summary: "Successful",
       detail: "Products Deleted",
       life: 3000,
-    });
-  };
+    })
+  }
 
   const onCategoryChange = (e: RadioButtonChangeEvent) => {
-    let _product = { ...product };
-    _product["category"] = e.value;
-    setProduct(_product);
-  };
+    const _product = { ...product }
+    _product["category"] = e.value
+    setProduct(_product)
+  }
 
   const onInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-    name: string
+    name: string,
   ) => {
-    const val = (e.target && e.target.value) || "";
-    let _product = { ...product };
-    _product[`${name}`] = val;
+    const val = (e.target && e.target.value) || ""
+    const _product = { ...product }
+    _product[`${name}`] = val
 
-    setProduct(_product);
-  };
+    setProduct(_product)
+  }
 
   const onInputNumberChange = (
     e: InputNumberValueChangeEvent,
-    name: string
+    name: string,
   ) => {
-    const val = e.value || 0;
-    let _product = { ...product };
-    _product[`${name}`] = val;
+    const val = e.value || 0
+    const _product = { ...product }
+    _product[`${name}`] = val
 
-    setProduct(_product);
-  };
+    setProduct(_product)
+  }
 
-  const leftToolbarTemplate = () => {
-    return (
-      <React.Fragment>
-        <div className="my-2">
-          <Button
-            label="New"
-            icon="pi pi-plus"
-            severity="success"
-            className=" mr-2"
-            onClick={openNew}
-          />
-          <Button
-            label="Delete"
-            icon="pi pi-trash"
-            severity="danger"
-            onClick={confirmDeleteSelected}
-            disabled={!selectedProducts || !selectedProducts.length}
-          />
-        </div>
-      </React.Fragment>
-    );
-  };
-
-  const rightToolbarTemplate = () => {
-    return (
-      <React.Fragment>
-        <FileUpload
-          mode="basic"
-          accept="image/*"
-          maxFileSize={1000000}
-          chooseLabel="Import"
-          className="mr-2 inline-block"
-        />
+  const leftToolbarTemplate = () => (
+    <React.Fragment>
+      <div className="my-2">
         <Button
-          label="Export"
-          icon="pi pi-upload"
-          severity="help"
-          onClick={exportCSV}
-        />
-      </React.Fragment>
-    );
-  };
-
-  const codeBodyTemplate = (rowData: Demo.Product) => {
-    return (
-      <>
-        <span className="p-column-title">Code</span>
-        {rowData.code}
-      </>
-    );
-  };
-
-  const nameBodyTemplate = (rowData: Demo.Product) => {
-    return (
-      <>
-        <span className="p-column-title">Name</span>
-        {rowData.name}
-      </>
-    );
-  };
-
-  const imageBodyTemplate = (rowData: Demo.Product) => {
-    return (
-      <>
-        <span className="p-column-title">Image</span>
-        <img
-          src={`/demo/images/product/${rowData.image}`}
-          alt={rowData.image}
-          className="shadow-2"
-          width="100"
-        />
-      </>
-    );
-  };
-
-  const priceBodyTemplate = (rowData: Demo.Product) => {
-    return (
-      <>
-        <span className="p-column-title">Price</span>
-        {formatCurrency(rowData.price as number)}
-      </>
-    );
-  };
-
-  const categoryBodyTemplate = (rowData: Demo.Product) => {
-    return (
-      <>
-        <span className="p-column-title">Category</span>
-        {rowData.category}
-      </>
-    );
-  };
-
-  const ratingBodyTemplate = (rowData: Demo.Product) => {
-    return (
-      <>
-        <span className="p-column-title">Reviews</span>
-        <Rating value={rowData.rating} readOnly cancel={false} />
-      </>
-    );
-  };
-
-  const statusBodyTemplate = (rowData: Demo.Product) => {
-    return (
-      <>
-        <span className="p-column-title">Status</span>
-        <span
-          className={`product-badge status-${rowData.inventoryStatus?.toLowerCase()}`}
-        >
-          {rowData.inventoryStatus}
-        </span>
-      </>
-    );
-  };
-
-  const actionBodyTemplate = (rowData: Demo.Product) => {
-    return (
-      <>
-        <Button
-          icon="pi pi-pencil"
-          rounded
+          label="New"
+          icon="pi pi-plus"
           severity="success"
-          className="mr-2"
-          onClick={() => editProduct(rowData)}
+          className=" mr-2"
+          onClick={openNew}
         />
         <Button
+          label="Delete"
           icon="pi pi-trash"
-          rounded
-          severity="warning"
-          onClick={() => confirmDeleteProduct(rowData)}
+          severity="danger"
+          onClick={confirmDeleteSelected}
+          disabled={!selectedProducts || !selectedProducts.length}
         />
-      </>
-    );
-  };
+      </div>
+    </React.Fragment>
+  )
+
+  const rightToolbarTemplate = () => (
+    <React.Fragment>
+      <FileUpload
+        mode="basic"
+        accept="image/*"
+        maxFileSize={1000000}
+        chooseLabel="Import"
+        className="mr-2 inline-block"
+      />
+      <Button
+        label="Export"
+        icon="pi pi-upload"
+        severity="help"
+        onClick={exportCSV}
+      />
+    </React.Fragment>
+  )
+
+  const codeBodyTemplate = (rowData: Demo.Product) => (
+    <>
+      <span className="p-column-title">Code</span>
+      {rowData.code}
+    </>
+  )
+
+  const nameBodyTemplate = (rowData: Demo.Product) => (
+    <>
+      <span className="p-column-title">Name</span>
+      {rowData.name}
+    </>
+  )
+
+  const imageBodyTemplate = (rowData: Demo.Product) => (
+    <>
+      <span className="p-column-title">Image</span>
+      <img
+        src={`/demo/images/product/${rowData.image}`}
+        alt={rowData.image}
+        className="shadow-2"
+        width="100"
+      />
+    </>
+  )
+
+  const priceBodyTemplate = (rowData: Demo.Product) => (
+    <>
+      <span className="p-column-title">Price</span>
+      {formatCurrency(rowData.price as number)}
+    </>
+  )
+
+  const categoryBodyTemplate = (rowData: Demo.Product) => (
+    <>
+      <span className="p-column-title">Category</span>
+      {rowData.category}
+    </>
+  )
+
+  const ratingBodyTemplate = (rowData: Demo.Product) => (
+    <>
+      <span className="p-column-title">Reviews</span>
+      <Rating value={rowData.rating} readOnly cancel={false} />
+    </>
+  )
+
+  const statusBodyTemplate = (rowData: Demo.Product) => (
+    <>
+      <span className="p-column-title">Status</span>
+      <span
+        className={`product-badge status-${rowData.inventoryStatus?.toLowerCase()}`}
+      >
+        {rowData.inventoryStatus}
+      </span>
+    </>
+  )
+
+  const actionBodyTemplate = (rowData: Demo.Product) => (
+    <>
+      <Button
+        icon="pi pi-pencil"
+        rounded
+        severity="success"
+        className="mr-2"
+        onClick={() => editProduct(rowData)}
+      />
+      <Button
+        icon="pi pi-trash"
+        rounded
+        severity="warning"
+        onClick={() => confirmDeleteProduct(rowData)}
+      />
+    </>
+  )
 
   const header = (
     <div className="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
@@ -349,14 +327,14 @@ const Crud = () => {
         />
       </span>
     </div>
-  );
+  )
 
   const productDialogFooter = (
     <>
       <Button label="Cancel" icon="pi pi-times" text onClick={hideDialog} />
       <Button label="Save" icon="pi pi-check" text onClick={saveProduct} />
     </>
-  );
+  )
   const deleteProductDialogFooter = (
     <>
       <Button
@@ -367,7 +345,7 @@ const Crud = () => {
       />
       <Button label="Yes" icon="pi pi-check" text onClick={deleteProduct} />
     </>
-  );
+  )
   const deleteProductsDialogFooter = (
     <>
       <Button
@@ -383,7 +361,7 @@ const Crud = () => {
         onClick={deleteSelectedProducts}
       />
     </>
-  );
+  )
 
   return (
     <div className="grid crud-demo">
@@ -624,7 +602,7 @@ const Crud = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Crud;
+export default Crud

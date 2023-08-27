@@ -49,11 +49,12 @@ const User = () => {
   const [globalFilter, setGlobalFilter] = useState<string>("")
   const toast = useRef<Toast>(null)
   const dt = useRef<DataTable<DataTableValueArray>>(null)
-  const { data, isLoading } = useGetUsersQuery({ page: lazyState.page, itemsPerPage: lazyState.rows, sortField: lazyState.sortField, sortOrder: lazyState.sortOrder, globalFilter: globalFilter })
-  const [ deleteUser ] = useDeleteUserMutation()
-  const [ updateUser ] = useUpdateUserMutation()
-  const [ createUser ] = useCreateUserMutation()
-  const [ deleteUsers ] = useDeleteUsersMutation()
+  const { data, isLoading, refetch } = useGetUsersQuery({ page: lazyState.page, itemsPerPage: lazyState.rows, sortField: lazyState.sortField, sortOrder: lazyState.sortOrder, globalFilter: globalFilter })
+  const [ deleteUser, {isLoading: isDeleting} ] = useDeleteUserMutation()
+  const [ updateUser, {isLoading: isUpdating} ] = useUpdateUserMutation()
+  const [ createUser, {isLoading: isCreating} ] = useCreateUserMutation()
+  const [ deleteUsers, {isLoading: isListDeleting} ] = useDeleteUsersMutation()
+  const isDataLoading = isLoading || isDeleting || isUpdating || isCreating || isListDeleting
   const tableData = (data?.msg.users) ?? ([] as DataTableValueArray)
   const openNew = () => {
     setUser(emptyUser)
@@ -109,7 +110,7 @@ const User = () => {
           detail: "유저 정보가 업데이트되었습니다.",
           life: 3000,
         })
-        updateUser(_user)
+        updateUser(_user).catch(e=>console.log(e))
       } else {
         _users.push(_user)
         toast.current?.show({
@@ -119,7 +120,9 @@ const User = () => {
           life: 3000,
         })
         delete _user._id
-        createUser(_user)
+        createUser(_user).then(()=>{
+          tableData.length<1&&refetch().catch(e=>console.log(e))
+        }).catch(e=>console.log(e))
       }
       setUsers(_users)
       setUserDialog(false)
@@ -139,7 +142,7 @@ const User = () => {
   }
 
   const userDelete = () => {
-    deleteUser(user?._id??'')
+    deleteUser(user?._id??'').catch(e=>console.log(e))
     const _users = users.filter((val) => val._id !== user._id)
     setUsers(_users)
     setDeleteUserDialog(false)
@@ -173,7 +176,7 @@ const User = () => {
   }
 
   const deleteSelectedUsers = () => {
-    deleteUsers(selectedUsers.map((user:User)=>user._id))
+    deleteUsers(selectedUsers.map((user:User)=>user._id)).catch(e=>console.log(e))
     setUsers(selectedUsers as unknown as User[])
     setDeleteUsersDialog(false)
     setSelectedUsers([])
@@ -340,7 +343,7 @@ const User = () => {
             sortOrder={lazyState.sortOrder}
             onFilter={onFilter}
             filters={lazyState.filters}
-            loading={isLoading}
+            loading={isDataLoading}
           >
             <Column
               selectionMode="multiple"

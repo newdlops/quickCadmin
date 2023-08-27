@@ -18,6 +18,7 @@ const AppMenu = () => {
       items: [
         { label: '제품관리', icon: 'pi pi-fw pi-box', to: '/product' },
         { label: '필요문서관리', icon: 'pi pi-fw pi-file', to: '/documents' },
+        { label: '시험소관리', icon: 'pi pi-fw pi-file', to: '/laboratory' },
       ],
     },
     {

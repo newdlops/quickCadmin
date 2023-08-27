@@ -1,11 +1,11 @@
-"use client";
-import React, { useRef } from "react";
+"use client"
+import React, { useRef } from "react"
 
-import { FileUpload } from "primereact/fileupload";
-import { Toast } from "primereact/toast";
+import { FileUpload } from "primereact/fileupload"
+import { Toast } from "primereact/toast"
 
 const FileDemo = () => {
-  const toast = useRef<Toast>(null);
+  const toast = useRef<Toast>(null)
 
   const onUpload = () => {
     toast.current?.show({
@@ -13,8 +13,8 @@ const FileDemo = () => {
       summary: "Success",
       detail: "File Uploaded",
       life: 3000,
-    });
-  };
+    })
+  }
 
   return (
     <div className="grid">
@@ -43,7 +43,7 @@ const FileDemo = () => {
         </div>
       </div>
     </div>
-  );
+  )
 };
 
-export default FileDemo;
+export default FileDemo
