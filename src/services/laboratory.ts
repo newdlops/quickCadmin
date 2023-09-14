@@ -14,11 +14,11 @@ const laboratoryApi = api.injectEndpoints({
   endpoints: (build) => ({
     getLaboratorys: build.query<LaboratoryResponse, PageRequestArgs>({
       query: ({ page, itemsPerPage, sortField, sortOrder, globalFilter }: PageRequestArgs) => `/laboratory/laboratorys?page=${page}&itemsPerPage=${itemsPerPage}&sortField=${sortField}&sortOrder=${sortOrder}&globalFilter=${globalFilter}`,
-      providesTags: (result?: LaboratoryResponse) => (result ? result?.msg?.laboratorys?.map(({_id}) => ({ type: 'Laboratory', id: _id })) : [{ type: 'Laboratory', id: 'LIST' }]),
+      providesTags: (result?: LaboratoryResponse) => (result ? result?.msg?.laboratorys?.map(({_id}) => ({ type: 'Laboratory' as const, id: _id })).concat({ type: 'Laboratory', id: 'LIST' }) : [{ type: 'Laboratory', id: 'LIST' }]),
     }),
     findLaboratoryById: build.query<{ status: string, msg: { totalNumber: number; laboratorys: Laboratory[]; } }, string>({
       query: (id: string) => `/laboratory/laboratory/${id}`,
-      providesTags: (_result, _error, id) => [{ type: 'Laboratory', id}],
+      providesTags: (_result, _error, id) => [{ type: 'Laboratory', id: id}],
     }),
     updateLaboratory: build.mutation<LaboratoryResponse, Laboratory>({
       query: (body: Laboratory) => ({

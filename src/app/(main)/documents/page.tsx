@@ -14,7 +14,7 @@ import FileUpLoadComponent from '@/components/fileupload'
 import { useCreateDocumentMutation, useGetDocumentsQuery, useUpdateDocumentMutation } from '@/services/document'
 import { DataTableStateEvent, DataTableValueArray } from 'primereact/datatable'
 
-export interface Document {
+export interface RequiredDocument {
   [key: string]: string | number | boolean | undefined ;
   _id?:string;
   documentName: string;
@@ -23,7 +23,7 @@ export interface Document {
 }
 
 const DocumentList = () => {
-  const emptyDocument: Document = {
+  const emptyDocument: RequiredDocument = {
     _id: "",
     documentName: "",
     description: "",
@@ -38,7 +38,7 @@ const DocumentList = () => {
     filters: {},
     multiSortMeta: [],
   })
-  const [document, setDocument] = useState<Document>(emptyDocument)
+  const [document, setDocument] = useState<RequiredDocument>(emptyDocument)
 
   const [globalFilter, setGlobalFilter] = useState<string>("")
   const [layout, setLayout] = useState<LayoutType>("grid")
@@ -72,7 +72,7 @@ const DocumentList = () => {
     setOpenDocumentDialog(true)
   }
 
-  const openEditDocumentDialog = (_document: Document) => {
+  const openEditDocumentDialog = (_document: RequiredDocument) => {
     setCreate(false)
     setDocument(_document)
     setOpenDocumentDialog(true)
@@ -164,7 +164,7 @@ const DocumentList = () => {
     </div>
   )
 
-  const dataviewListItem = (rowData: Document) => (
+  const dataviewListItem = (rowData: RequiredDocument) => (
     <div className="col-12">
       <div className="flex flex-column md:flex-row align-items-center p-3 w-full">
         <Image
@@ -192,7 +192,7 @@ const DocumentList = () => {
     </div>
   )
 
-  const dataviewGridItem = (rowData: Document) => (
+  const dataviewGridItem = (rowData: RequiredDocument) => (
     <div className="col-12 lg:col-4">
       <div className="card m-3 border-1 surface-border">
         <div className="flex flex-column align-items-center text-center mb-3">
@@ -218,7 +218,7 @@ const DocumentList = () => {
     </div>
   )
 
-  const itemTemplate = (data: Document, layout: LayoutType) => {
+  const itemTemplate = (data: RequiredDocument, layout: LayoutType) => {
     if (!data) {
       return
     }
