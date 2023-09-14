@@ -18,7 +18,7 @@ const laboratoryApi = api.injectEndpoints({
     }),
     findLaboratoryById: build.query<{ status: string, msg: { totalNumber: number; laboratorys: Laboratory[]; } }, string>({
       query: (id: string) => `/laboratory/laboratory/${id}`,
-      providesTags: (_result, _error, id) => [{ type: 'Laboratory', id}],
+      providesTags: (_result, _error, id) => [{ type: 'Laboratory', id: id}],
     }),
     updateLaboratory: build.mutation<LaboratoryResponse, Laboratory>({
       query: (body: Laboratory) => ({

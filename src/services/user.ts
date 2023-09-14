@@ -21,11 +21,11 @@ const userApi = api.injectEndpoints({
   endpoints: (build) => ({
     getUsers: build.query<UserResponse, PageRequestArgs>({
       query: ({ page, itemsPerPage, sortField, sortOrder, globalFilter }: PageRequestArgs) => `/user/users?page=${page}&itemsPerPage=${itemsPerPage}&sortField=${sortField}&sortOrder=${sortOrder}&globalFilter=${globalFilter}`,
-      providesTags: (result?: UserResponse) => (result ? result?.msg?.users?.map(({_id}) => ({ type: 'User' as const, id: _id })).concat({ type: 'User', id: 'LIST'}) : [{ type: 'User', id: 'LIST'}]),
+      providesTags: (result?: UserResponse) => (result ? result?.msg?.users?.map(({_id}) => ({ type: 'User' as const, id: _id })).concat({ type:'User', id: 'LIST'}) : [{ type:'User', id: 'LIST' }]),
     }),
     findUserById: build.query<{ status: string, msg: { totalNumber: number; users: User[]; } }, string>({
       query: (id: string) => `/user/user/${id}`,
-      providesTags: (_result, _error, id) => [{ type: 'User', id}],
+      providesTags: (_result, _error, id) => [{ type: 'User', id: id}],
     }),
     deleteUser: build.mutation<UserResponse, string>({
       query: (id: string) => ({
@@ -48,7 +48,7 @@ const userApi = api.injectEndpoints({
         method: 'POST',
         body: body,
       }),
-      invalidatesTags: [{ type: 'User', id: 'LIST'}],
+      invalidatesTags: [{ type:'User', id: 'LIST'}],
     }),
     deleteUsers: build.mutation<UserResponse, string[]>({
       query: (ids: string[]) => ({
