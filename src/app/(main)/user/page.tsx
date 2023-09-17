@@ -11,7 +11,7 @@ import React, { useRef, useState } from "react"
 import { useGetUsersQuery, useDeleteUserMutation, useUpdateUserMutation, useCreateUserMutation, useDeleteUsersMutation } from '@/services/user'
 import { ToggleButton, ToggleButtonChangeEvent } from 'primereact/togglebutton'
 
-export interface User {
+export interface IUser {
   [index:string|number]:string|number|boolean|undefined;
   _id?: string;
   username: string;
@@ -21,7 +21,7 @@ export interface User {
 }
 
 const User = () => {
-  const emptyUser: User = {
+  const emptyUser: IUser = {
     _id: "",
     username: "",
     password: "",
@@ -38,12 +38,12 @@ const User = () => {
     multiSortMeta: [],
   })
 
-  const [users, setUsers] = useState<User[]>([])
+  const [users, setUsers] = useState<IUser[]>([])
   const [userDialog, setUserDialog] = useState(false)
   const [userCreate, setUserCreate] = useState(false)
   const [deleteUserDialog, setDeleteUserDialog] = useState(false)
   const [deleteUsersDialog, setDeleteUsersDialog] = useState(false)
-  const [user, setUser] = useState<User>(emptyUser)
+  const [user, setUser] = useState<IUser>(emptyUser)
   const [selectedUsers, setSelectedUsers] = useState<DataTableCellSelection<DataTableValueArray>>([] as unknown as DataTableCellSelection<DataTableValueArray>)
   const [submitted, setSubmitted] = useState(false)
   const [globalFilter, setGlobalFilter] = useState<string>("")
@@ -129,12 +129,12 @@ const User = () => {
     }
   }
 
-  const editUser = (_user: User) => {
+  const editUser = (_user: IUser) => {
     setUser({ ..._user })
     setUserDialog(true)
   }
 
-  const confirmDeleteUser = (_user: User) => {
+  const confirmDeleteUser = (_user: IUser) => {
     setUser(_user)
     setDeleteUserDialog(true)
   }
@@ -174,8 +174,8 @@ const User = () => {
   }
 
   const deleteSelectedUsers = () => {
-    deleteUsers(selectedUsers.map((user:User)=>user._id)).catch(e=>console.log(e))
-    setUsers(selectedUsers as unknown as User[])
+    deleteUsers(selectedUsers.map((user:IUser)=>user._id)).catch(e=>console.log(e))
+    setUsers(selectedUsers as unknown as IUser[])
     setDeleteUsersDialog(false)
     setSelectedUsers([])
     toast.current?.show({
@@ -236,7 +236,7 @@ const User = () => {
     </React.Fragment>
   )
 
-  const actionBodyTemplate = (rowData: User) => (
+  const actionBodyTemplate = (rowData: IUser) => (
     <>
       <Button
         icon="pi pi-pencil"

@@ -11,7 +11,7 @@ import React, { useRef, useState } from "react"
 import { useGetLaboratorysQuery, useUpdateLaboratoryMutation, useCreateLaboratoryMutation } from '@/services/laboratory'
 // import { ToggleButton, ToggleButtonChangeEvent } from 'primereact/togglebutton'
 
-export interface Laboratory {
+export interface ILaboratory {
   [index:string|number]:string|undefined;
   _id?: string;
   laboratoryName: string;
@@ -24,7 +24,7 @@ export interface Laboratory {
 }
 
 const Laboratory = () => {
-  const emptyLaboratory: Laboratory = {
+  const emptyLaboratory: ILaboratory = {
     _id: "",
     laboratoryName: "",
     laboratoryEngName: "",
@@ -44,12 +44,12 @@ const Laboratory = () => {
     multiSortMeta: [],
   })
 
-  const [laboratorys, setLaboratorys] = useState<Laboratory[]>([])
+  const [laboratorys, setLaboratorys] = useState<ILaboratory[]>([])
   const [laboratoryDialog, setLaboratoryDialog] = useState(false)
   const [laboratoryCreate, setLaboratoryCreate] = useState(false)
   // const [deleteLaboratoryDialog, setDeleteLaboratoryDialog] = useState(false)
   // const [deleteLaboratorysDialog, setDeleteLaboratorysDialog] = useState(false)
-  const [laboratory, setLaboratory] = useState<Laboratory>(emptyLaboratory)
+  const [laboratory, setLaboratory] = useState<ILaboratory>(emptyLaboratory)
   // const [selectedLaboratorys, setSelectedLaboratorys] = useState<DataTableCellSelection<DataTableValueArray>>([] as unknown as DataTableCellSelection<DataTableValueArray>)
   const [submitted, setSubmitted] = useState(false)
   const [globalFilter, setGlobalFilter] = useState<string>('')
@@ -133,7 +133,7 @@ const Laboratory = () => {
     }
   }
 
-  const editLaboratory = (_laboratory: Laboratory) => {
+  const editLaboratory = (_laboratory: ILaboratory) => {
     setLaboratory({ ..._laboratory })
     setLaboratoryDialog(true)
   }
@@ -240,7 +240,7 @@ const Laboratory = () => {
     </React.Fragment>
   )
 
-  const actionBodyTemplate = (rowData: Laboratory) => (
+  const actionBodyTemplate = (rowData: ILaboratory) => (
     <>
       <Button
         icon="pi pi-pencil"

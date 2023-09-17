@@ -26,9 +26,11 @@ import {InputTextarea} from "primereact/inputtextarea"
 import {PickList} from "primereact/picklist"
 import {useGetAllDocumentQuery} from "@/services/document"
 import {RequiredDocument} from "@/app/(main)/documents/page"
+import {useGetAllLaboratoryQuery} from "@/services/laboratory"
+import {ILaboratory} from "@/app/(main)/laboratory/page"
 
 export interface Product {
-  [index: string | number]: string | number | boolean | RequiredDocument[] | undefined;
+  [index: string | number]: string | number | boolean | RequiredDocument[] | ILaboratory[] | undefined;
 
   _id?: string;
   productname: string;
@@ -40,7 +42,7 @@ export interface Product {
   period: string;
   expectedCost: string;
   requiredDocument: RequiredDocument[];
-  testingLaboratory: string;
+  testingLaboratory: ILaboratory[];
   tip: string;
   description: string;
   isDelete: boolean;
@@ -58,7 +60,7 @@ const Product = () => {
     period: "",
     expectedCost: "",
     requiredDocument: [],
-    testingLaboratory: "",
+    testingLaboratory: [],
     tip: "",
     description: "",
     isDelete: false,
@@ -92,6 +94,7 @@ const Product = () => {
     globalFilter: globalFilter,
   })
   const {data: documents} = useGetAllDocumentQuery(null)
+  const {data: laboratories} = useGetAllLaboratoryQuery(null)
   const [deleteProduct, {isLoading: isDeleting}] = useDeleteProductMutation()
   const [updateProduct, {isLoading: isUpdating}] = useUpdateProductMutation()
   const [createProduct, {isLoading: isCreating}] = useCreateProductMutation()
@@ -99,9 +102,13 @@ const Product = () => {
   const isDataLoading = isLoading || isDeleting || isUpdating || isCreating || isListDeleting
   const tableData = (data?.msg.products) ?? ([] as DataTableValueArray)
 
+  const pickedDocumentSourceList = documents?.msg.filter(doc => !product.requiredDocument.some(v => v == doc._id))
+  const pickedDocumentList = documents?.msg.filter(doc => product.requiredDocument.some(v => v == doc._id))
+  const pickedLaboratorySourceList = laboratories?.msg.filter(doc => !product.testingLaboratory.some(v => v == doc._id))
+  const pickedLaboratoryList = laboratories?.msg.filter(doc => product.testingLaboratory.some(v => v == doc._id))
+
   const openNew = () => {
     setProduct(emptyProduct)
-    // setPicklistSourceValue(documents?.msg)
     setProductCreate(true)
     setSubmitted(false)
     setProductDialog(true)
@@ -111,8 +118,6 @@ const Product = () => {
     setSubmitted(false)
     setProductCreate(false)
     setProductDialog(false)
-    // setPicklistSourceValue(documents?.msg)
-    // setPicklistTargetValue([])
   }
 
   const hideDeleteProductDialog = () => {
@@ -181,10 +186,13 @@ const Product = () => {
     setProduct({..._product})
     setProductDialog(true)
   }
-  const pickedListSourceList = documents?.msg.filter(doc => !product.requiredDocument.some(v => v == doc._id))
-  const pickedListTargetList = documents?.msg.filter(doc => product.requiredDocument.some(v => v == doc._id))
-  const onChangePickedList = (e) => {
-    setProduct({...product, requiredDocument: e.target.map(v=>v._id)})
+
+  const onChangePickedDocumentList = (e) => {
+    setProduct({...product, requiredDocument: e.target.map(v => v._id)})
+  }
+
+  const onChangePickedLaboratoryList = (e) => {
+    setProduct({...product, testingLaboratory: e.target.map(v => v._id)})
   }
 
   const confirmDeleteProduct = (_product: Product) => {
@@ -432,7 +440,7 @@ const Product = () => {
             ></Column>
             <Column
               field="substitution"
-              header="대체여부"
+              header="구매대행"
               headerStyle={{minWidth: "8rem"}}
             ></Column>
             <Column
@@ -510,13 +518,13 @@ const Product = () => {
                     <small className="p-invalid">제품명을 입력하세요</small>
                   )}
                 </div>
-                <div className="field col-3">
-                  <label htmlFor="substitution">대체가능여부</label>
+                <div className="field col-5">
+                  <label htmlFor="substitution">구매대행 가능여부</label>
                   <ToggleButton
                     checked={product.substitution}
                     onChange={onToggleSubstitution}
-                    onLabel="대체가능"
-                    offLabel="대체불가"
+                    onLabel="구매대행가능"
+                    offLabel="구매대행불가"
                   />
                 </div>
                 {!productCreate && <div className="field col-3">
@@ -610,22 +618,6 @@ const Product = () => {
                     <small className="p-invalid">예상견적가를 입력하세요</small>
                   )}
                 </div>
-                <div className="field col-6">
-                  <label htmlFor="testingLaboratory">시험소</label>
-                  <InputText
-                    id="testingLaboratory"
-                    value={product.testingLaboratory}
-                    onChange={(e) => onInputChange(e, "testingLaboratory")}
-                    required
-                    autoFocus
-                    className={classNames({
-                      "p-invalid": submitted && !product.testingLaboratory,
-                    })}
-                  />
-                  {submitted && !product.testingLaboratory && (
-                    <small className="p-invalid">시험소를 입력하세요</small>
-                  )}
-                </div>
               </div>
               <div className="field col-12">
                 <label htmlFor="tip">팁</label>
@@ -659,16 +651,31 @@ const Product = () => {
                   <small className="p-invalid">설명을 입력하세요</small>
                 )}
               </div>
-              <div className="col-12">
+              <div className="col-12 mb-4">
                 <div className="card">
                   <h5>필요문서</h5>
                   <PickList
-                    source={pickedListSourceList}
-                    target={pickedListTargetList}
+                    source={pickedDocumentSourceList}
+                    target={pickedDocumentList}
                     sourceHeader="문서목록"
                     targetHeader="문서지정"
                     itemTemplate={(item) => <div>{item.documentName}</div>}
-                    onChange={onChangePickedList}
+                    onChange={onChangePickedDocumentList}
+                    sourceStyle={{height: "200px"}}
+                    targetStyle={{height: "200px"}}
+                  ></PickList>
+                </div>
+              </div>
+              <div className="col-12">
+                <div className="card">
+                  <h5>시험소</h5>
+                  <PickList
+                    source={pickedLaboratorySourceList}
+                    target={pickedLaboratoryList}
+                    sourceHeader="시험소목록"
+                    targetHeader="시험소지정"
+                    itemTemplate={(item) => <div>{item.laboratoryName}</div>}
+                    onChange={onChangePickedLaboratoryList}
                     sourceStyle={{height: "200px"}}
                     targetStyle={{height: "200px"}}
                   ></PickList>

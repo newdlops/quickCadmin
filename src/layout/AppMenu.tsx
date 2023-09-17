@@ -23,7 +23,10 @@ const AppMenu = () => {
     },
     {
       label: '프로젝트관리',
-      items: [{ label: '프로젝트관리', icon: 'pi pi-fw pi-briefcase', to: '/project' }],
+      items: [
+        { label: '프로젝트리스트', icon: 'pi pi-fw pi-briefcase', to: '/project' },
+        { label: '프로젝트상세', icon: 'pi pi-fw pi-briefcase', to: '/project/projectdetail' },
+      ],
     },
     {
       label: 'UI Components',
