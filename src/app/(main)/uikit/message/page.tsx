@@ -1,4 +1,4 @@
-"use client";
+"use client"
 import React, { useRef, useState } from "react";
 import { Toast } from "primereact/toast";
 import { Messages } from "primereact/messages";

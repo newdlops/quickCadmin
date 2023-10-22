@@ -17,6 +17,8 @@ export interface IUser {
   username: string;
   email: string;
   password: string;
+  accessToken: string;
+  accessTokenExpiredAt: string;
   isDelete: boolean;
 }
 
@@ -25,6 +27,8 @@ const User = () => {
     _id: "",
     username: "",
     password: "",
+    accessToken: "",
+    accessTokenExpiredAt: "",
     email: "",
     isDelete: false,
   }
@@ -362,6 +366,18 @@ const User = () => {
             <Column
               field="email"
               header="Email"
+              sortable
+              headerStyle={{ minWidth: "10rem" }}
+            ></Column>
+            <Column
+              field="accessToken"
+              header="accessToken"
+              sortable
+              headerStyle={{ minWidth: "10rem" }}
+            ></Column>
+            <Column
+              field="accessTokenExpiredAt"
+              header="accessTokenExpiredAt"
               sortable
               headerStyle={{ minWidth: "10rem" }}
             ></Column>
