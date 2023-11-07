@@ -40,7 +40,7 @@ const BlockViewer = (props: BlockViewerProps) => {
             <button ref={actionCopyRef} tabIndex={0} className="p-link block-action-copy" onClick={copyCode}>
               <i className="pi pi-copy"></i>
             </button>
-            <Tooltip target={actionCopyRef as any} position="bottom" content="Copied to clipboard" event="focus" />
+            <Tooltip target={actionCopyRef as never} position="bottom" content="Copied to clipboard" event="focus" />
           </div>
         </div>
         <div className="block-content">

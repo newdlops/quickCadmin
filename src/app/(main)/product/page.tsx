@@ -81,7 +81,7 @@ const Product = () => {
   const [deleteProductDialog, setDeleteProductDialog] = useState(false)
   const [deleteProductsDialog, setDeleteProductsDialog] = useState(false)
   const [product, setProduct] = useState<Product>(emptyProduct)
-  const [selectedProducts, setSelectedProducts] = useState<DataTableCellSelection<DataTableValueArray>>([])
+  const [selectedProducts, setSelectedProducts] = useState<DataTableCellSelection<DataTableValueArray>>()
   const [submitted, setSubmitted] = useState(false)
   const [globalFilter, setGlobalFilter] = useState<string>("")
   const toast = useRef<Toast>(null)
@@ -102,9 +102,13 @@ const Product = () => {
   const isDataLoading = isLoading || isDeleting || isUpdating || isCreating || isListDeleting
   const tableData = (data?.msg.products) ?? ([] as DataTableValueArray)
 
+  // @ts-ignore
   const pickedDocumentSourceList = documents?.msg.filter(doc => !product.requiredDocument.some(v => v == doc._id))
+  // @ts-ignore
   const pickedDocumentList = documents?.msg.filter(doc => product.requiredDocument.some(v => v == doc._id))
+  // @ts-ignore
   const pickedLaboratorySourceList = laboratories?.msg.filter(doc => !product.testingLaboratory.some(v => v == doc._id))
+  // @ts-ignore
   const pickedLaboratoryList = laboratories?.msg.filter(doc => product.testingLaboratory.some(v => v == doc._id))
 
   const openNew = () => {
@@ -188,6 +192,7 @@ const Product = () => {
   }
 
   const onChangePickedDocumentList = (e) => {
+    // @ts-ignore
     setProduct({...product, requiredDocument: e.target.map(v => v._id)})
   }
 

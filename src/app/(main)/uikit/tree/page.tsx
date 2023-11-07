@@ -1,28 +1,28 @@
-"use client";
-import React, { useState, useEffect } from "react";
+"use client"
+import React, { useState, useEffect } from "react"
 import {
   Tree,
   TreeCheckboxSelectionKeys,
   TreeMultipleSelectionKeys,
-} from "primereact/tree";
-import { TreeTable, TreeTableSelectionKeysType } from "primereact/treetable";
-import { Column } from "primereact/column";
-import { NodeService } from "../../../../demo/service/NodeService";
-import { TreeNode } from "primereact/treenode";
+} from "primereact/tree"
+import { TreeTable, TreeTableSelectionKeysType } from "primereact/treetable"
+import { Column } from "primereact/column"
+import { NodeService } from "../../../../demo/service/NodeService"
+import { TreeNode } from "primereact/treenode"
 
 const TreeDemo = () => {
-  const [treeNodes, setTreeNodes] = useState<TreeNode[]>([]);
+  const [treeNodes, setTreeNodes] = useState<TreeNode[]>([])
   const [selectedTreeNodeKeys, setSelectedTreeNodeKeys] = useState<
     string | TreeMultipleSelectionKeys | TreeCheckboxSelectionKeys | null
-  >(null);
-  const [treeTableNodes, setTreeTableNodes] = useState<TreeNode[]>([]);
+  >(null)
+  const [treeTableNodes, setTreeTableNodes] = useState<TreeNode[]>([])
   const [selectedTreeTableNodeKeys, setSelectedTreeTableNodeKeys] =
-    useState<TreeTableSelectionKeysType | null>(null);
+    useState<TreeTableSelectionKeysType | null>(null)
 
   useEffect(() => {
-    NodeService.getTreeNodes().then((data) => setTreeNodes(data));
-    NodeService.getTreeTableNodes().then((data) => setTreeTableNodes(data));
-  }, []);
+    NodeService.getTreeNodes().then((data) => setTreeNodes(data))
+    NodeService.getTreeTableNodes().then((data) => setTreeTableNodes(data))
+  }, [])
 
   return (
     <div className="grid">
@@ -54,7 +54,7 @@ const TreeDemo = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default TreeDemo;
+export default TreeDemo

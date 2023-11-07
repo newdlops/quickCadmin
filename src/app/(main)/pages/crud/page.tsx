@@ -378,6 +378,8 @@ const Crud = () => {
             ref={dt}
             value={products}
             selection={selectedProducts}
+            cellSelection={false}
+            selectionMode={"checkbox"}
             onSelectionChange={(e) =>
               setSelectedProducts(e.value as Demo.Product[])
             }
@@ -391,7 +393,6 @@ const Crud = () => {
             globalFilter={globalFilter}
             emptyMessage="No products found."
             header={header}
-            responsiveLayout="scroll"
           >
             <Column
               selectionMode="multiple"
