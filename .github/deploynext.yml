@@ -1,0 +1,5 @@
+name: 배포
+
+on:
+  workflow_dispatch:
+
