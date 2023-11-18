@@ -7,10 +7,13 @@ permissions:
   contents: read
 
 jobs:
-  - name: EC2 Test
-    run: |
-      echo "${{ secrets.EC2_SSH_KEY }}" > private_key.pem
-      chmod 600 private_key.pem
-      ls -al
-      rm -f private_key.pem
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - name: EC2 Test
+      run: |
+        echo "${{ secrets.EC2_SSH_KEY }}" > private_key.pem
+        chmod 600 private_key.pem
+        ls -al
+        rm -f private_key.pem
 
