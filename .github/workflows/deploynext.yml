@@ -10,6 +10,9 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
+    - name: github action check
+      run: |
+        ls -al
     - name: EC2 Test
       run: |
         echo "${{ secrets.EC2_SSH_KEY }}" > private_key.pem
