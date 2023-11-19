@@ -12,6 +12,7 @@ jobs:
     steps:
     - name: github action check
       run: |
+        cd docker
         ls -al
     - name: EC2 Test
       run: |
