@@ -12,8 +12,8 @@ jobs:
     steps:
     - name: github action check
       run: |
-        cd docker
-        ls -al
+        cd ~
+        ls -R
     - name: EC2 Test
       run: |
         echo "${{ secrets.EC2_SSH_KEY }}" > private_key.pem
