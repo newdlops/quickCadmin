@@ -27,6 +27,14 @@ const userApi = api.injectEndpoints({
       query: (id: string) => `/user/user/${id}`,
       providesTags: (_result, _error, id) => [{ type: 'User', id: id}],
     }),
+    adminLogin: build.query<{ status: string}, Partial<IUser>>({
+      query: (body: Partial<IUser>) => ({
+        url: `/user/adminlogin/`,
+        method: 'POST',
+        body: body,
+      }),
+      providesTags: (_result, _error, id) => [{ type: 'User'}],
+    }),
     deleteUser: build.mutation<UserResponse, string>({
       query: (id: string) => ({
         url: `/user/user/${id}`,
@@ -70,4 +78,5 @@ export const {
   useUpdateUserMutation,
   useCreateUserMutation,
   useDeleteUsersMutation,
+  useLazyAdminLoginQuery,
 } = userApi

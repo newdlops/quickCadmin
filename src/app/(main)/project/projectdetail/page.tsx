@@ -16,6 +16,7 @@ import {
 } from "@/services/projectitem"
 import {IUser} from "@/app/(main)/user/page"
 import {useUpdateProjectMutation} from "@/services/project"
+import {Dropdown} from "primereact/dropdown"
 
 export interface IProject {
   _id?: string;
@@ -37,7 +38,7 @@ export interface IProjectItem {
   checkdate: Date;
   sample: boolean;
   document: boolean;
-  processedStage: string;
+  processedStage: number;
   requestUser: string;
   status: boolean;
   description: string;
@@ -64,7 +65,7 @@ const Project = () => {
     sample: false,
     checkdate: new Date(),
     document: false,
-    processedStage: "",
+    processedStage: 1,
     requestUser: "",
     status: false,
     description: "",
@@ -80,6 +81,7 @@ const Project = () => {
   const [editProjectItem, showEditProjectItemDialog] = useState(false)
   const [projectItemCreate, setProjectItemCreate] = useState(false)
   const [projectItem, setProjectItem] = useState(emptyProjectItem)
+  const [dropdownValue, setDropdownValue] = useState(null)
 
   const [updateProject] = useUpdateProjectMutation()
   const {data: projectItemList, isLoading} = useFindProjectItemByProjectQuery(project, { skip: project._id == ""})
@@ -112,6 +114,10 @@ const Project = () => {
     _projectItem[`${name}`] = val
 
     setProjectItem(_projectItem)
+  }
+
+  const projectItemStatusChange = (e) => {
+    setProjectItem({...projectItem, processedStage: e.value})
   }
 
   const onDateChange = (
@@ -228,6 +234,16 @@ const Project = () => {
     _projectItem[`${name}`] = val
     setProjectItem(_projectItem)
   }
+
+  const dropdownValues = [
+    { name: '준비단계', value: 1 },
+    { name: '시험대기', value: 2 },
+    { name: '시험중', value: 3 },
+    { name: '성적서 작성중', value: 4 },
+    { name: '성적서 완료', value: 5 },
+    { name: '인증완료', value: 6 },
+    { name: '완료', value: 7 },
+  ]
 
   return (
     <div className="grid p-fluid">
@@ -361,8 +377,18 @@ const Project = () => {
         <div className="formgrid grid col-12">
           <FormFeid className="field col-3" feildName="projectItemName" label="세부항목명" invalidMsg="세부항목을 입력하세요"
             valueObj={projectItem} onInputChange={projectItemChange} submitted={submitted}/>
-          <FormFeid className="field col-3" feildName="processedStage" label="진행단계" invalidMsg="세부항목을 입력하세요"
-            valueObj={projectItem} onInputChange={projectItemChange} submitted={submitted}/>
+          <div className="field col-3 h-3rem">
+            <label htmlFor="status">진행단계</label>
+            <Dropdown
+              id="status"
+              className="field h-3rem"
+              value={parseInt(projectItem.processedStage)}
+              onChange={projectItemStatusChange}
+              options={dropdownValues}
+              optionLabel="name"
+              placeholder="진행단계를 선택하세요"
+            />
+          </div>
           <FormFeid className="field col-3" feildName="description" label="비고" invalidMsg="세부항목을 입력하세요"
             valueObj={projectItem} onInputChange={projectItemChange} submitted={submitted}/>
           <div className="field col-3">

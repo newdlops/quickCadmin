@@ -29,7 +29,7 @@ import {RequiredDocument} from "@/app/(main)/documents/page"
 import {useGetAllLaboratoryQuery} from "@/services/laboratory"
 import {ILaboratory} from "@/app/(main)/laboratory/page"
 
-export interface Product {
+export interface IProduct {
   [index: string | number]: string | number | boolean | RequiredDocument[] | ILaboratory[] | undefined;
 
   _id?: string;
@@ -49,7 +49,7 @@ export interface Product {
 }
 
 const Product = () => {
-  const emptyProduct: Product = {
+  const emptyProduct: IProduct = {
     _id: "",
     productname: "",
     keyword: "",
@@ -75,12 +75,12 @@ const Product = () => {
     multiSortMeta: [],
   })
 
-  const [products, setProducts] = useState<Product[]>([])
+  const [products, setProducts] = useState<IProduct[]>([])
   const [productDialog, setProductDialog] = useState(false)
   const [productCreate, setProductCreate] = useState(false)
   const [deleteProductDialog, setDeleteProductDialog] = useState(false)
   const [deleteProductsDialog, setDeleteProductsDialog] = useState(false)
-  const [product, setProduct] = useState<Product>(emptyProduct)
+  const [product, setProduct] = useState<IProduct>(emptyProduct)
   const [selectedProducts, setSelectedProducts] = useState<DataTableCellSelection<DataTableValueArray>>()
   const [submitted, setSubmitted] = useState(false)
   const [globalFilter, setGlobalFilter] = useState<string>("")
@@ -186,7 +186,7 @@ const Product = () => {
     }
   }
 
-  const editProduct = (_product: Product) => {
+  const editProduct = (_product: IProduct) => {
     setProduct({..._product})
     setProductDialog(true)
   }
@@ -200,7 +200,7 @@ const Product = () => {
     setProduct({...product, testingLaboratory: e.target.map(v => v._id)})
   }
 
-  const confirmDeleteProduct = (_product: Product) => {
+  const confirmDeleteProduct = (_product: IProduct) => {
     setProduct(_product)
     setDeleteProductDialog(true)
   }
@@ -240,8 +240,8 @@ const Product = () => {
   }
 
   const deleteSelectedProducts = () => {
-    deleteProducts(selectedProducts.map((_product: Product) => _product._id)).catch(e => console.log(e))
-    setProducts(selectedProducts as unknown as Product[])
+    deleteProducts(selectedProducts.map((_product: IProduct) => _product._id)).catch(e => console.log(e))
+    setProducts(selectedProducts as unknown as IProduct[])
     setDeleteProductsDialog(false)
     setSelectedProducts([] as unknown as DataTableCellSelection<DataTableValueArray>)
     toast.current?.show({
@@ -308,7 +308,7 @@ const Product = () => {
     </React.Fragment>
   )
 
-  const actionBodyTemplate = (rowData: Product) => (
+  const actionBodyTemplate = (rowData: IProduct) => (
     <>
       <Button
         icon="pi pi-pencil"

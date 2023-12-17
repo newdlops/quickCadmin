@@ -16,14 +16,20 @@ import { LayoutContext } from "./context/layoutcontext"
 import PrimeReact from "primereact/api"
 import { ChildContainerProps, LayoutState, AppTopbarRef } from "../types/types"
 import { usePathname, useSearchParams } from "next/navigation"
+import {useSelector} from "react-redux"
 
 
 const Layout = ({ children }: ChildContainerProps) => {
+  const isLogin = useSelector(state => state.login.isLogin)
   const { layoutConfig, layoutState, setLayoutState } =
     useContext(LayoutContext)
   const topbarRef = useRef<AppTopbarRef>(null)
   const sidebarRef = useRef<HTMLDivElement>(null)
-
+  const router = useRouter()
+  useEffect(()=>{
+    console.log(isLogin)
+    if(!isLogin)router.replace('/auth/login')
+  },[isLogin])
   const [bindMenuOutsideClickListener, unbindMenuOutsideClickListener] =
     useEventListener({
       type: "click",
@@ -142,21 +148,20 @@ const Layout = ({ children }: ChildContainerProps) => {
     "p-input-filled": layoutConfig.inputStyle === "filled",
     "p-ripple-disabled": !layoutConfig.ripple,
   })
-
   return (
     <React.Fragment>
-      <div className={containerClass}>
-        <AppTopbar ref={topbarRef} />
+      {isLogin && <div className={containerClass}>
+        <AppTopbar ref={topbarRef}/>
         <div ref={sidebarRef} className="layout-sidebar">
-          <AppSidebar />
+          <AppSidebar/>
         </div>
         <div className="layout-main-container">
           <div className="layout-main">{children}</div>
-          <AppFooter />
+          <AppFooter/>
         </div>
-        <AppConfig />
+        <AppConfig/>
         <div className="layout-mask"></div>
-      </div>
+      </div>}
     </React.Fragment>
   )
 }

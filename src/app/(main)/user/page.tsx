@@ -208,6 +208,13 @@ const User = () => {
     setUser(_user)
   }
 
+  const onToggleAdmin = (
+    e: ToggleButtonChangeEvent,
+  ) => {
+    const _user = { ...user, isAdmin: e.value}
+    setUser(_user)
+  }
+
   const leftToolbarTemplate = () => (
     <React.Fragment>
       <div className="my-2">
@@ -460,6 +467,15 @@ const User = () => {
               <ToggleButton
                 checked={user.isDelete}
                 onChange={onToggleDelete}
+                onLabel="예"
+                offLabel="아니오"
+              />
+            </div>}
+            {!userCreate&&<div className="field">
+              <label htmlFor="isAdmin">관리자</label>
+              <ToggleButton
+                checked={user.isAdmin}
+                onChange={onToggleAdmin}
                 onLabel="예"
                 offLabel="아니오"
               />

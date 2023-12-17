@@ -2,7 +2,8 @@ import { createApi, fetchBaseQuery, retry } from '@reduxjs/toolkit/query/react'
 
 // Create our baseQuery instance
 const baseQuery = fetchBaseQuery({
-  baseUrl: 'https://api.quickc.co.kr',
+  // baseUrl: 'https://api.quickc.co.kr',
+  baseUrl: 'http://localhost:3000',
   // prepareHeaders: (headers, { getState }) => {
   //   // By default, if we have a token in the store, let's use that for authenticated requests
   //   const token = (getState() as RootState).auth.token
@@ -38,7 +39,7 @@ export const api = createApi({
    * Tag types must be defined in the original API definition
    * for any tags that would be provided by injected endpoints
    */
-  tagTypes: ['User', 'Document', 'Laboratory', 'Product', 'Project', 'ProjectItem'],
+  tagTypes: ['User', 'Document', 'Laboratory', 'Product', 'Project', 'ProjectItem', 'Notice'],
   /**
    * This api has endpoints injected in adjacent files,
    * which is why no endpoints are shown below.

@@ -5,12 +5,14 @@ import type { TypedUseSelectorHook } from 'react-redux'
 import type { ConfigureStoreOptions } from '@reduxjs/toolkit'
 
 import { api } from '../services/api'
+import loginSlice from "@/stores/reducers/loginSlice"
 
 export const createStore = (
   options?: ConfigureStoreOptions,
 ) =>
   configureStore({
     reducer: {
+      login: loginSlice,
       [api.reducerPath]: api.reducer,
     },
     middleware: (getDefaultMiddleware) =>

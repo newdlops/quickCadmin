@@ -1,11 +1,11 @@
-import { Product } from '@/app/(main)/product/page'
+import { IProduct } from '@/app/(main)/product/page'
 import { api } from './api'
 
 interface ProductResponse {
   status: string;
   msg: {
     totalNumber: number;
-    products: Product[];
+    products: IProduct[];
   }
 }
 
@@ -23,7 +23,7 @@ const productApi = api.injectEndpoints({
       query: ({ page, itemsPerPage, sortField, sortOrder, globalFilter }: PageRequestArgs) => `/product/products?page=${page}&itemsPerPage=${itemsPerPage}&sortField=${sortField}&sortOrder=${sortOrder}&globalFilter=${globalFilter}`,
       providesTags: (result?: ProductResponse) => (result ? result?.msg?.products?.map(({_id}) => ({ type: 'Product' as const, id: _id })).concat({ type:'Product', id: 'LIST'}) : [{ type:'Product', id: 'LIST' }]),
     }),
-    findProductById: build.query<{ status: string, msg: { totalNumber: number; products: Product[]; } }, string>({
+    findProductById: build.query<{ status: string, msg: { totalNumber: number; products: IProduct[]; } }, string>({
       query: (id: string) => `/product/product/${id}`,
       providesTags: (_result, _error, id) => [{ type: 'Product', id: id}],
     }),
@@ -34,16 +34,16 @@ const productApi = api.injectEndpoints({
       }),
       invalidatesTags: (_result, _error, arg) => [{ type: 'Product', id: arg }],
     }),
-    updateProduct: build.mutation<ProductResponse, Product>({
-      query: (body: Product) => ({
+    updateProduct: build.mutation<ProductResponse, IProduct>({
+      query: (body: IProduct) => ({
         url: `/product/product/${body._id}`,
         method: 'PUT',
         body: body,
       }),
       invalidatesTags: (_result, _error, arg) => [{ type: 'Product', id: arg._id }],
     }),
-    createProduct: build.mutation<ProductResponse, Partial<Product>>({
-      query: (body: Partial<Product>) => ({
+    createProduct: build.mutation<ProductResponse, Partial<IProduct>>({
+      query: (body: Partial<IProduct>) => ({
         url: `/product/product`,
         method: 'POST',
         body: body,
