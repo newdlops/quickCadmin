@@ -1,5 +1,6 @@
 import { IUser } from '@/app/(main)/user/page'
 import { api } from './api'
+import Cookies from 'js-cookie'
 
 interface UserResponse {
   status: string;
@@ -33,7 +34,22 @@ const userApi = api.injectEndpoints({
         method: 'POST',
         body: body,
       }),
+      async onQueryStarted(arg, { queryFulfilled}){
+        try {
+          const { data } = await queryFulfilled
+          Cookies.set('accessToken', data.msg.accessToken)
+        } catch (e) {
+          console.log('login failed', e)
+        }
+      },
       providesTags: (_result, _error, id) => [{ type: 'User'}],
+    }),
+    tokenLogin: build.query<{status: string }, null>({
+      query: ()=> {
+        const accessToken = Cookies.get('accessToken')
+        return `/user/userTokenLogin/${encodeURIComponent(accessToken ?? '')}`
+      },
+      providesTags: (_result, _error, id) => [{ type: 'User', id: id}],
     }),
     deleteUser: build.mutation<UserResponse, string>({
       query: (id: string) => ({
@@ -79,4 +95,5 @@ export const {
   useCreateUserMutation,
   useDeleteUsersMutation,
   useLazyAdminLoginQuery,
+  useTokenLoginQuery,
 } = userApi

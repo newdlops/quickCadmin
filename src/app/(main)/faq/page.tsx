@@ -46,6 +46,7 @@ const Faq = () => {
   const [faqDialog, setFaqDialog] = useState(false)
   const [faqCreate, setFaqCreate] = useState(false)
   const [faq, setFaq] = useState<IFaq>(emptyFaq)
+  // @ts-ignore
   const [selectedFaqs, setSelectedFaqs] = useState<DataTableCellSelection<DataTableValueArray>>([])
   const [submitted, setSubmitted] = useState(false)
   const [globalFilter, setGlobalFilter] = useState<string>("")
@@ -212,6 +213,7 @@ const Faq = () => {
     </>
   )
 
+  // @ts-ignore
   const localDate = (rowData: IFaq) => new Date(rowData.projectStartDate).toLocaleString()
   return (
     <div className="grid crud-demo">

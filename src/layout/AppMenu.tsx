@@ -10,12 +10,12 @@ const AppMenu = () => {
     //   items: [{ label: '메인화면', icon: 'pi pi-fw pi-home', to: '/', target: '_self' }],
     // },
     {
-      label: 'Notice',
-      items: [{ label: '공지사항', icon: 'pi pi-fw pi-megaphone', to: '/notice', target: '_self' }],
+      label: '공지사항 관리',
+      items: [{ label: '공지사항관리', icon: 'pi pi-fw pi-megaphone', to: '/notice', target: '_self' }],
     },
     {
-      label: '자주하는 질문',
-      items: [{ label: 'FAQ', icon: 'pi pi-fw pi-comments', to: '/faq', target: '_self' }],
+      label: '자주하는 질문 관리',
+      items: [{ label: 'FAQ관리', icon: 'pi pi-fw pi-comments', to: '/faq', target: '_self' }],
     },
     {
       label: '유저관리',

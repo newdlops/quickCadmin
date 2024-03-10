@@ -12,7 +12,7 @@ import {useDispatch, useSelector} from "react-redux"
 
 const LoginPage = () => {
   const dispatch = useDispatch()
-  const isLogin = useSelector(state => state.login.isLogin)
+  // const isLogin = useSelector(state => state.login.isLogin)
   const [password, setPassword] = useState("")
   const [email, setEmail] = useState("")
   const [checked, setChecked] = useState(false)
@@ -29,10 +29,13 @@ const LoginPage = () => {
       email: email,
       password: password,
     }).then(({ data }) => {
+      // @ts-ignore
       if(data?.msg){
+        // @ts-ignore
         dispatch(setLogin(true))
         router.replace('/')
       } else {
+        // @ts-ignore
         dispatch(setLogin(false))
         router.replace('/auth/access')
       }

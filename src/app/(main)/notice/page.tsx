@@ -46,6 +46,7 @@ const Notice = () => {
   const [noticeDialog, setNoticeDialog] = useState(false)
   const [noticeCreate, setNoticeCreate] = useState(false)
   const [notice, setNotice] = useState<INotice>(emptyNotice)
+  // @ts-ignore
   const [selectedNotices, setSelectedNotices] = useState<DataTableCellSelection<DataTableValueArray>>([])
   const [submitted, setSubmitted] = useState(false)
   const [globalFilter, setGlobalFilter] = useState<string>("")
@@ -226,6 +227,7 @@ const Notice = () => {
     </>
   )
 
+  // @ts-ignore
   const localDate = (rowData: INotice) => new Date(rowData.projectStartDate).toLocaleString()
   return (
     <div className="grid crud-demo">

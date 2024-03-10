@@ -78,7 +78,7 @@ export default function FileUpLoadComponent() {
     <div className="flex align-items-center flex-column">
       <i className="pi pi-image mt-3 p-5" style={{ fontSize: '5em', borderRadius: '50%', backgroundColor: 'var(--surface-b)', color: 'var(--surface-d)' }}></i>
       <span style={{ fontSize: '1.2em', color: 'var(--text-color-secondary)' }} className="my-5">
-                    문서 양식 이미지를 드래그해주세요
+                    파일을 드래그하여 이곳으로 옮깁니다.
       </span>
     </div>
   )

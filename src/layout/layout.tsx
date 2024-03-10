@@ -16,10 +16,14 @@ import { LayoutContext } from "./context/layoutcontext"
 import PrimeReact from "primereact/api"
 import { ChildContainerProps, LayoutState, AppTopbarRef } from "../types/types"
 import { usePathname, useSearchParams } from "next/navigation"
-import {useSelector} from "react-redux"
+import {useDispatch, useSelector} from "react-redux"
+import {useTokenLoginQuery} from "@/services/user"
+import {setLogin} from "@/stores/reducers/loginSlice"
 
 
 const Layout = ({ children }: ChildContainerProps) => {
+  const dispatch = useDispatch()
+  const { data, isError, isLoading } = useTokenLoginQuery()
   const isLogin = useSelector(state => state.login.isLogin)
   const { layoutConfig, layoutState, setLayoutState } =
     useContext(LayoutContext)
@@ -27,9 +31,12 @@ const Layout = ({ children }: ChildContainerProps) => {
   const sidebarRef = useRef<HTMLDivElement>(null)
   const router = useRouter()
   useEffect(()=>{
-    console.log(isLogin)
-    if(!isLogin)router.replace('/auth/login')
-  },[isLogin])
+    console.log(isLogin, data, isLoading)
+    const isLogged = data?.msg.accessToken.length > 0
+    console.log('토큰있음', isLogged, isLoading)
+    dispatch(setLogin(isLogged))
+    if(!isLogged && !isLoading)router.replace('/auth/login')
+  },[isLogin, data])
   const [bindMenuOutsideClickListener, unbindMenuOutsideClickListener] =
     useEventListener({
       type: "click",
