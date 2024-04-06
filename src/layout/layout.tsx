@@ -30,17 +30,17 @@ const Layout = ({ children }: ChildContainerProps) => {
   const topbarRef = useRef<AppTopbarRef>(null)
   const sidebarRef = useRef<HTMLDivElement>(null)
   const router = useRouter()
-  useEffect(()=>{
-    console.log(`로딩 로그인 상태 체크 로그인: ${isLogin}, 로딩중: ${isLoading}`, data)
-    const isLogged = data?.msg?.accessToken.length > 0
-    console.log('토큰있음', isLogged, '로딩중?',isLoading)
-    dispatch(setLogin(isLogged))
-    if(!isLoading) {
-      console.log('로딩끝남 로그인 채크중')
-      if(isLogged)router.replace('/')
-      else router.replace('/auth/login')
-    }
-  },[isLogin, data, isLoading])
+  // useEffect(()=>{
+  //   console.log(`로딩 로그인 상태 체크 로그인: ${isLogin}, 로딩중: ${isLoading}`, data)
+  //   const isLogged = data?.msg?.accessToken.length > 0
+  //   console.log('토큰있음', isLogged, '로딩중?',isLoading)
+  //   dispatch(setLogin(isLogged))
+  //   if(!isLoading) {
+  //     console.log('로딩끝남 로그인 채크중')
+  //     if(isLogged)router.replace('/')
+  //     else router.replace('/auth/login')
+  //   }
+  // },[isLogin, data, isLoading])
   const [bindMenuOutsideClickListener, unbindMenuOutsideClickListener] =
     useEventListener({
       type: "click",
