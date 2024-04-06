@@ -39,7 +39,7 @@ const LoginPage = () => {
         // @ts-ignore
         console.log('로그인 시도 실패')
         dispatch(setLogin(false))
-        router.replace('/auth/access')
+        router.replace('/auth/login')
       }
     })
   }
