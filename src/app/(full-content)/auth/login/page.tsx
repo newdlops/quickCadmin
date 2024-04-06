@@ -32,10 +32,12 @@ const LoginPage = () => {
       // @ts-ignore
       if(data?.msg){
         // @ts-ignore
+        console.log('로그인 시도 성공')
         dispatch(setLogin(true))
         router.replace('/')
       } else {
         // @ts-ignore
+        console.log('로그인 시도 실패')
         dispatch(setLogin(false))
         router.replace('/auth/access')
       }

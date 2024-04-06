@@ -37,7 +37,8 @@ const userApi = api.injectEndpoints({
       async onQueryStarted(arg, { queryFulfilled}){
         try {
           const { data } = await queryFulfilled
-          Cookies.set('accessToken', data.msg.accessToken)
+          console.log('쿼리성공 토큰저장합니다', data)
+          Cookies.set('accessToken', data?.msg?.accessToken)
         } catch (e) {
           console.log('login failed', e)
         }
@@ -46,8 +47,19 @@ const userApi = api.injectEndpoints({
     }),
     tokenLogin: build.query<{status: string }, null>({
       query: ()=> {
+        console.log('토큰로그인 액세스토큰')
         const accessToken = Cookies.get('accessToken')
+        console.log('액세스 토큰 ', accessToken)
         return `/user/userTokenLogin/${encodeURIComponent(accessToken ?? '')}`
+      },
+      async onQueryStarted(arg, {queryFulfilled}){
+        console.log('토큰로그인 시도중')
+        try {
+          const { data } = await queryFulfilled
+          console.log('토큰로그인 성공', data)
+        } catch (err) {
+          console.log('token login failed', err);
+        }
       },
       providesTags: (_result, _error, id) => [{ type: 'User', id: id}],
     }),
