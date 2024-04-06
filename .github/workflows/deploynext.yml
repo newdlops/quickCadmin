@@ -13,6 +13,19 @@ jobs:
             npm install
             npm run build
 
+    - name: clean app folder
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USER }}
+        key: ${{ secrets.EC2_SSH_KEY }}
+        port: 22
+        script: |
+          cd docker/admin/public
+          rm -rf *
+          cd ..
+          docker stack rm qadmin
+
     - name: Copy file to EC2
       uses: appleboy/scp-action@v0.1.7
       with:
@@ -22,3 +35,18 @@ jobs:
         port: 22
         source: "out/*"
         target: "docker/admin/public"
+
+    - name: Restart Docker Container
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.EC2_IP_ADDRESS }}
+        username: ${{ secrets.EC2_USERNAME }}
+        key: ${{ secrets.EC2_SSH_KEY }}
+        port: 22
+        script: |
+          cd docker/admin/public/out
+          mv -f * ..
+          cd ..
+          rm -rf out
+          cd ..
+          docker stack deploy -c docker-compose.yml qadmin
