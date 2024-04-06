@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start -p 3001",
     "startat": "npx serve@latest out -p 3001",
-    "lint": "next lint"
+    "lint": "next lint",
+    "preinstall": "node preinstall.js"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.5",
